@@ -122,7 +122,7 @@
       }
     },
     created() {
-      this.$store.dispatch('asyncTask', this.listQuery)
+      // this.$store.dispatch('asyncTask', this.listQuery)
     },
     computed: {
       ...mapGetters(['list', 'total'])

@@ -11,6 +11,11 @@ export default new Router({
       component: require('@/views/Index').default
     },
     {
+      path: '/import',
+      name: 'ImportData',
+      component: require('@/views/ImportData').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

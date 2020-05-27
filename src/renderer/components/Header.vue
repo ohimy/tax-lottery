@@ -3,70 +3,22 @@
     <Header class="ivu-layout-header">
       <Row>
         <i-col :span="12">
-          <img :src="url" class="img">
+          <router-link :to="{name:'Home'}"> 
+            <img :src="url" class="img">
+          </router-link>
         </i-col>
-        <i-col :span="12" class="text">
-          <Button type="success" @click="modal = true">登录</Button>
-          <Button type="warning" @click="modal1 = true">注册</Button>
+        <i-col :span="8" class="text">
+          <router-link :to="{name:'ImportData'}"> 
+            <Button type="success">发票数据</Button>
+          </router-link>
+        </i-col>
+        <i-col :span="8" class="text">
+          <router-link :to="{name:'ImportData'}"> 
+            <Button type="success">奖池查询</Button>
+          </router-link>
         </i-col>
       </Row>
     </Header>
-    <!--登录-->
-    <Modal v-model="modal" width="360">
-      <p slot="header" style="color:#f60;text-align:center">
-        <span>登录</span>
-      </p>
-      <div style="text-align:center">
-        <Form ref="formInline" :model="formInline" :rules="ruleInline" inline>
-          <FormItem prop="user">
-            <Input type="text" v-model="formInline.user" placeholder="请输入账号" size="large" class="input">
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <FormItem prop="password">
-            <Input type="password" v-model="formInline.password" placeholder="请输入密码" size="large" class="input">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-        </Form>
-      </div>
-      <div slot="footer" class="text">
-        <Button type="success" long :loading="modal_loading" class="btn" @click="handleSubmit('formInline')">登录</Button>
-      </div>
-    </Modal>
-    <!--注册-->
-    <Modal v-model="modal1" width="360">
-      <p slot="header" style="color:#f60;text-align:center">
-        <span>注册</span>
-      </p>
-      <div style="text-align:center">
-        <Form ref="formInline" :model="formInline" :rules="ruleInline" inline>
-          <FormItem prop="user">
-            <Input type="text" v-model="formInline.user" placeholder="设置账号（邮箱/电话号码）" size="large" class="input">
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <FormItem prop="password">
-            <Input type="password" v-model="formInline.password" placeholder="设置密码（6-20位）" size="large" class="input">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <FormItem prop="password">
-            <Input type="password" v-model="formInline.password2" placeholder="确认密码" size="large" class="input">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-          <FormItem prop="code">
-            <Input type="text" v-model="formInline.code" placeholder="邀请码" size="large" class="input">
-              <Icon type="ios-list-box-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-        </Form>
-      </div>
-      <div slot="footer" class="text">
-        <Button type="success" long :loading="modal_loading" class="btn" @click="handleSubmit2('formInline')">注册</Button>
-      </div>
-    </Modal>
   </div>
 </template>
 
