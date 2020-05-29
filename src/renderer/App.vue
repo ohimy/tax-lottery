@@ -24,14 +24,15 @@
 
 <style lang="scss" scoped>
 /deep/.ivu-layout{
-  background: #fff !important;
+  background-color: #fff !important;
+  // background-image: url(./assets/bg.jpg);
+  background-size: 100% 100%;
   height: auto;
-  padding-bottom: 80px;
 }
 .layout {
-  height: 100%;
+  max-height: 100%;
 }
 .padding {
-  padding: 20px 55px;
+  padding: 20px 20px;
 }
 </style>

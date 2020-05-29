@@ -1,99 +1,65 @@
 <template>
   <div class="app-container">
-    <Header class="ivu-layout-header">
-      <Row>
-        <i-col :span="12">
-          <router-link :to="{name:'Home'}"> 
-            <img :src="url" class="img">
-          </router-link>
-        </i-col>
-        <i-col :span="8" class="text">
-          <router-link :to="{name:'SeedIndex'}"> 
-            <Button type="success">发票数据</Button>
-          </router-link>
-        </i-col>
-        <i-col :span="8" class="text">
-          <router-link :to="{name:'LotteryIndex'}"> 
-            <Button type="success">奖池查询</Button>
-          </router-link>
-        </i-col>
-      </Row>
-    </Header>
+    <Row class="header">
+      <i-col :span="18">
+        <router-link :to="{name:'Home'}"> 
+          <span :class="this.$route.name == 'Home' ? 'menu-current' : 'menu'">抽奖界面</span>
+        </router-link>
+        <router-link :to="{name:'SeedIndex'}">
+          <span :class="this.$route.name == 'SeedIndex' ? 'menu-current' : 'menu'">发票数据</span>
+        </router-link>
+        <router-link :to="{name:'PrizeIndex'}">
+          <span :class="this.$route.name == 'PrizeIndex' ? 'menu-current' : 'menu'">奖品选择</span>
+        </router-link>
+        <router-link :to="{name:'LotteryIndex'}"> 
+          <span :class="this.$route.name == 'LotteryIndex' ? 'menu-current' : 'menu'">奖池查询</span>
+        </router-link>
+      </i-col>
+      <i-col :span="6" class="export">
+        <Button type="success">导出结果</Button>
+      </i-col>
+    </Row>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      url: 'https://img.alicdn.com/imgextra/i3/1666188817/O1CN016axy5z2F0Efa3gY9m_!!1666188817-2-daren.png',
-      modal: false,
-      modal1: false,
-      formInline: {
-        user: '',
-        password: '',
-        password2: '',
-        code: ''
-      },
-      modal_loading: false,
-      ruleInline: {
-        user: [
-          { required: true, message: '请输入账号', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { type: 'string', min: 6, max: 20, message: '密码在6-20位之间', trigger: 'blur' }
-        ],
-        password2: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { type: 'string', min: 6, max: 20, message: '密码在6-20位之间', trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: '请输入邀请码', trigger: 'blur' }
-        ]
-      }
-    }
-  },
-  methods: {
-    handleSubmit (name) {
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          this.$Message.success('登录成功!')
-        } else {
-          this.$Message.error('账号密码错误!')
-        }
-      })
-    },
-    handleSubmit2 (name) {
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          this.$Message.success('注册成功!')
-        } else {
-          this.$Message.error('密码不一致!')
-        }
-      })
-    }
-  }
 }
 </script>
 
 <style scoped>
-.input {
-  width: 320px;
+.header {
+  padding: 20px;
 }
-.btn {
-  width: 100%;
-  height: 40px;
+.menu {
+  margin: 0px 15px 0px 0px;
+  padding: 0px 0px 5px 0px;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: normal;
+  color: #333333;
+  border-bottom: 2px solid transparent;
 }
-.text {
+.menu-current {
+  margin: 0px 15px 0px 0px;
+  padding: 0px 0px 5px 0px;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: normal;
+  color: #2d8cf0;
+  border-bottom: 2px solid #2d8cf0;
+}
+.info {
+  margin: 10px 0px 0px 20px;
+  color: #666666;
+}
+.export {
   text-align: right;
 }
-.ivu-layout-header {
-  background: #17233d;
+button:focus {
+  outline: 0 none !important;
 }
-.img {
-  height: 50px;
-  width: auto;
-  margin-top: 7px;
+button:active {
+  outline: 0 none !important;
 }
 </style>

@@ -16,6 +16,11 @@ export default new Router({
       component: require('@/views/Seed').default
     },
     {
+      path: '/prize',
+      name: 'PrizeIndex',
+      component: require('@/views/Prize').default
+    },
+    {
       path: '/lotteries',
       name: 'LotteryIndex',
       component: require('@/views/Lottery').default
