@@ -4,7 +4,7 @@
       <Button icon="ios-cloud-upload-outline">导入</Button>
     </Upload>
     <Button icon="ios-cloud-upload-outline" @click="filterList">计算奖票</Button>
-    <Table :columns="taxColumns" :data="taxes"></Table>
+    <Table :columns="taxColumns" :data="list"></Table>
     <Page v-if="total > 0" :current="listQuery.page" :page-size="listQuery.size" :total="total" show-total @on-change="pageChange" />
   </div>
 </template>
@@ -32,25 +32,22 @@ export default {
         {
           title: '金额',
           key: 'amount'
-        },
-        {
-          title: '奖票数量',
-          render: (h, { row }) => {
-            return h('span', this.lotteryCount(row.amount))
-          }
         }
       ]
     }
   },
   mounted() {
-    this.pageChange(1)
+    this.$store.dispatch('fetchTaxList', {
+      page: 1,
+      size: 20
+    })
   },
   computed: {
     list() {
       return this.$store.state.Seed.list
     },
     total() {
-      return this.$store.state.Seed.list.length
+      return 20
     }
   },
   methods: {
@@ -58,8 +55,10 @@ export default {
       return amount > 2000 ? 10 : parseInt(amount / 200)
     },
     pageChange(pageNo) {
-      const offset = (pageNo - 1) * this.listQuery.size
-      this.taxes = (offset + this.listQuery.size >= this.list.length) ? this.list.slice(offset, this.list.length) : this.list.slice(offset, offset + this.listQuery.size)
+      this.$store.dispatch('fetchTaxList', {
+        page: pageNo,
+        size: 20
+      })
     },
     handleUpload(file) {
       let that = this
@@ -80,7 +79,7 @@ export default {
             type: 'binary'
           })
           const outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
-          that.$store.commit('COMPOSE_RESULTS', outdata)
+          that.$store.dispatch('importSeedData', outdata)
         }
         reader.readAsArrayBuffer(f)
       }

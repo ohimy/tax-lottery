@@ -1,3 +1,5 @@
+import db from '../../utils/datastore'
+
 const state = {
   list: [],
   lotteries: []
@@ -8,7 +10,7 @@ const getters = {
 }
 
 const mutations = {
-  COMPOSE_RESULTS: (state, list) => {
+  FETCH_LIST: (state, list) => {
     state.list = list
   },
   PUSH_LOTTERIES: (state, lottery) => {
@@ -17,9 +19,21 @@ const mutations = {
 }
 
 const actions = {
+  async fetchTaxList ({ commit }, { page, size }) {
+    try {
+      const data = await db.get('texes')
+        .take(size)
+        .value()
+      commit('FETCH_LIST', data)
+      return true
+    } catch (error) {
+      console.log(error)
+    }
+  },
   async importSeedData ({ commit }, list) {
     try {
-      commit('COMPOSE_RESULTS', list)
+      await db.get('texes').push(list).write()
+      console.log(db.get('texes').size().value())
       return true
     } catch (error) {
       console.log(error)
