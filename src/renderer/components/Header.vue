@@ -1,8 +1,12 @@
 <template>
   <div class="app-container">
-    <Row class="header">
-      <i-col :span="18">
-        <router-link :to="{name:'Home'}"> 
+    <div class="header">
+      <div>
+        <router-link :to="{name: 'PrizeIndex'}" v-if="this.$route.name != 'PrizeIndex'" class="home">
+          <img class="home-icon" src="../assets/home.png" alt="首页图片">
+          <span class="home-text">返回首页</span>
+        </router-link>
+        <!-- <router-link :to="{name:'Home'}"> 
           <span :class="this.$route.name == 'Home' ? 'menu-current' : 'menu'">抽奖界面</span>
         </router-link>
         <router-link :to="{name:'SeedIndex'}">
@@ -13,12 +17,12 @@
         </router-link>
         <router-link :to="{name:'LotteryIndex'}"> 
           <span :class="this.$route.name == 'LotteryIndex' ? 'menu-current' : 'menu'">奖池查询</span>
-        </router-link>
-      </i-col>
-      <i-col :span="6" class="export">
+        </router-link> -->
+      </div>
+      <div class="export">
         <Button type="success">导出结果</Button>
-      </i-col>
-    </Row>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -30,6 +34,23 @@ export default {
 <style scoped>
 .header {
   padding: 20px;
+}
+.home {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.home-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+.home-text {
+  margin: 2px 0px 0px 5px;
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: normal;
+  color: #333333; 
 }
 .menu {
   margin: 0px 15px 0px 0px;
