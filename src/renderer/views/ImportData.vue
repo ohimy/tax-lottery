@@ -3,38 +3,45 @@
     <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload="handleUpload">
       <Button icon="ios-cloud-upload-outline">导入</Button>
     </Upload>
+    {{ 0 }}
+    {{ total || '无数据' }}
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import XLSX from 'xlsx'
 export default {
   name: 'ImportDataPage',
   data() {
     return {}
   },
+  computed: {
+    ...mapGetters(['total', 'list'])
+  },
   methods: {
+    ...mapActions(['importSeedData']),
     handleUpload(file) {
-      var reader = new FileReader()
+      const reader = new FileReader()
+      let that = this
       // 重写FileReader上的readAsBinaryString方法
       FileReader.prototype.readAsBinaryString = function(f) {
-        var binary = ''
-        var wb // 读取完成的数据
-        var outdata // 你需要的数据
-        var reader = new FileReader()
+        let binary = ''
+        const reader = new FileReader()
         reader.onload = function(e) {
           // 读取成Uint8Array，再转换为Unicode编码（Unicode占两个字节）
-          var bytes = new Uint8Array(reader.result)
-          var length = bytes.byteLength
-          for (var i = 0; i < length; i++) {
+          const bytes = new Uint8Array(reader.result)
+          const length = bytes.byteLength
+          for (let i = 0; i < length; i++) {
             binary += String.fromCharCode(bytes[i])
           }
           // 接下来就是xlsx了，具体可看api
-          wb = XLSX.read(binary, {
+          const wb = XLSX.read(binary, {
             type: 'binary'
           })
-          outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
-          console.log(outdata)
+          const outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
+          // that.importSeedData(outdata, outdata.length)
+          console.log(outdata, outdata.length)
         }
         reader.readAsArrayBuffer(f)
       }

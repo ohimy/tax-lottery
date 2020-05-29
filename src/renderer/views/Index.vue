@@ -95,7 +95,6 @@
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex'
   export default {
     name: 'IndexPage',
     data () {
@@ -124,9 +123,6 @@
     created() {
       // this.$store.dispatch('asyncTask', this.listQuery)
     },
-    computed: {
-      ...mapGetters(['list', 'total'])
-    },
     methods: {
       query() {
         this.$store.dispatch('asyncTask', this.listQuery)
@@ -134,10 +130,7 @@
       pIndexChange(i) {
         this.listQuery.page = i
         this.query()
-      },
-      ...mapActions({
-        getData: 'asyncTask'
-      })
+      }
     }
   }
 </script>
