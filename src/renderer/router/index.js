@@ -11,9 +11,14 @@ export default new Router({
       component: require('@/views/Index').default
     },
     {
-      path: '/import',
-      name: 'ImportData',
-      component: require('@/views/ImportData').default
+      path: '/seeds',
+      name: 'SeedIndex',
+      component: require('@/views/Seed').default
+    },
+    {
+      path: '/lotteries',
+      name: 'LotteryIndex',
+      component: require('@/views/Lottery').default
     },
     {
       path: '*',

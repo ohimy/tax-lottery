@@ -13,7 +13,7 @@
 <script>
 import XLSX from 'xlsx'
 export default {
-  name: 'ImportDataPage',
+  name: 'SeedIndex',
   data() {
     return {
       taxes: [],
@@ -91,18 +91,9 @@ export default {
     async cleanList() {
       await this.$store.dispatch('cleanSeedData')
     },
-    filterList() {
-      this.list.forEach(element => {
-        if (this.lotteryCount(element.amount) > 0) {
-          for (let index = 0; index < this.lotteryCount(element.amount); index++) {
-            this.$store.commit('PUSH_LOTTERIES', {
-              no: element.no,
-              code: element.code
-            })
-            console.log(element.no)
-          }
-        }
-      })
+    async filterList() {
+      await this.$store.dispatch('filterSeedData')
+      this.$router.push('/lotteries')
     }
   }
 }

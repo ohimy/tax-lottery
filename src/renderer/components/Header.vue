@@ -8,12 +8,12 @@
           </router-link>
         </i-col>
         <i-col :span="8" class="text">
-          <router-link :to="{name:'ImportData'}"> 
+          <router-link :to="{name:'SeedIndex'}"> 
             <Button type="success">发票数据</Button>
           </router-link>
         </i-col>
         <i-col :span="8" class="text">
-          <router-link :to="{name:'ImportData'}"> 
+          <router-link :to="{name:'LotteryIndex'}"> 
             <Button type="success">奖池查询</Button>
           </router-link>
         </i-col>
