@@ -2,18 +2,18 @@
   <div class="app-container">
     <Row class="header">
       <i-col :span="18">
+        <router-link :to="{name:'PrizeIndex'}">
+          <span :class="this.$route.name == 'PrizeIndex' ? 'menu-current' : 'menu'">奖项选择</span>
+        </router-link>
         <router-link :to="{name:'Home'}"> 
           <span :class="this.$route.name == 'Home' ? 'menu-current' : 'menu'">抽奖界面</span>
         </router-link>
         <router-link :to="{name:'SeedIndex'}">
-          <span :class="this.$route.name == 'SeedIndex' ? 'menu-current' : 'menu'">发票数据</span>
+          <span :class="this.$route.name == 'SeedIndex' ? 'menu-current' : 'menu'">数据导入</span>
         </router-link>
-        <router-link :to="{name:'PrizeIndex'}">
-          <span :class="this.$route.name == 'PrizeIndex' ? 'menu-current' : 'menu'">奖品选择</span>
-        </router-link>
-        <router-link :to="{name:'LotteryIndex'}"> 
+        <!-- <router-link :to="{name:'LotteryIndex'}"> 
           <span :class="this.$route.name == 'LotteryIndex' ? 'menu-current' : 'menu'">奖池查询</span>
-        </router-link>
+        </router-link> -->
       </i-col>
       <i-col :span="6" class="export">
         <Button type="success">导出结果</Button>
