@@ -5,9 +5,9 @@
     </Upload>
     <Button icon="ios-cloud-upload-outline" @click="cleanList">清空数据</Button>
     <Button icon="ios-cloud-upload-outline" @click="filterList">计算奖票</Button>
-    <Button icon="ios-cloud-upload-outline" @click="filterList">打乱奖池</Button>
-    <!-- <Table :columns="taxColumns" :data="list" class="table"></Table>
-    <Page v-if="total > 0" :current="listQuery.page" :page-size="listQuery.size" :total="total" show-total @on-change="pageChange" /> -->
+    <Button icon="ios-cloud-upload-outline" @click="shuffleList">打乱奖池</Button>
+    <Table :columns="taxColumns" :data="list" class="table"></Table>
+    <Page v-if="total > 0" :current="listQuery.page" :page-size="listQuery.size" :total="total" show-total @on-change="pageChange" />
   </div>
 </template>
 
@@ -95,6 +95,11 @@ export default {
     async filterList() {
       await this.$store.dispatch('filterSeedData')
       this.$router.push('/lotteries')
+    },
+    async shuffleList() {
+      await this.$store.dispatch('shuffle')
+      this.pageChange(1)
+      console.log('已打乱')
     }
   }
 }

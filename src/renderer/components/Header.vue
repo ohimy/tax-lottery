@@ -9,14 +9,17 @@
           <span :class="this.$route.name == 'Home' ? 'menu-current' : 'menu'">抽奖界面</span>
         </router-link>
         <router-link :to="{name:'SeedIndex'}">
-          <span :class="this.$route.name == 'SeedIndex' ? 'menu-current' : 'menu'">数据导入</span>
+          <span :class="this.$route.name == 'SeedIndex' ? 'menu-current' : 'menu'" @click="exportData">数据导入</span>
         </router-link>
+        {{ firstLotteryIsOver }}
+        {{ secondLotteryIsOver }}
+        {{ thirdLotteryIsOver }}
         <!-- <router-link :to="{name:'LotteryIndex'}"> 
           <span :class="this.$route.name == 'LotteryIndex' ? 'menu-current' : 'menu'">奖池查询</span>
         </router-link> -->
       </i-col>
       <i-col :span="6" class="export">
-        <Button type="success">导出结果</Button>
+        <Button v-if="firstLotteryIsOver && secondLotteryIsOver && thirdLotteryIsOver" type="success">导出结果</Button>
       </i-col>
     </Row>
   </div>
@@ -24,6 +27,22 @@
 
 <script>
 export default {
+  computed: {
+    firstLotteryIsOver() {
+      return this.$store.state.seed.firstLottery.length === 1
+    },
+    secondLotteryIsOver() {
+      return this.$store.state.seed.secondLottery.length === 10
+    },
+    thirdLotteryIsOver() {
+      return this.$store.state.seed.thirdLottery.length === 100
+    }
+  },
+  methods: {
+    exportData() {
+
+    }
+  }
 }
 </script>
 

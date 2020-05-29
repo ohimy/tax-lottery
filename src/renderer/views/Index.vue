@@ -43,7 +43,7 @@
           </CarouselItem>
         </Carousel>
       </div>
-      <button class="primary-btn" @click="lottery(10)">开始抽奖</button>
+      <button class="primary-btn" @click="lottery(3)">开始抽奖</button>
     </div>
   </div>
 </template>
@@ -64,9 +64,8 @@
       }
     },
     methods: {
-      async lottery(count) {
-        const data = await this.$store.dispatch('lottery', count)
-        console.log(data)
+      lottery(count) {
+        this.$store.dispatch('lottery', count)
       }
     }
   }
