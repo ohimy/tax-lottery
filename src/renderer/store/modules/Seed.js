@@ -1,49 +1,61 @@
 import db from '../../utils/datastore'
 
 const state = {
-  list: [],
+  taxList: [],
+  taxTotal: 0,
   lotteries: []
 }
 
-const getters = {
-  list: state => state.list
-}
-
 const mutations = {
-  FETCH_LIST: (state, list) => {
-    state.list = list
+  set_tax_list: (state, taxList) => {
+    state.taxList = taxList
   },
-  PUSH_LOTTERIES: (state, lottery) => {
-    state.lotteries.push(lottery)
+  set_tax_total: (state, total) => {
+    state.taxTotal = total
   }
 }
 
 const actions = {
   async fetchTaxList ({ commit }, { page, size }) {
-    try {
-      const data = await db.get('texes')
-        .take(size)
-        .value()
-      commit('FETCH_LIST', data)
-      return true
-    } catch (error) {
-      console.log(error)
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        const data = await db.get('taxes')
+          .take(size)
+          .value()
+        commit('set_tax_list', data)
+        resolve(data)
+      } catch (error) {
+        reject(error)
+      }
+    })
   },
   async importSeedData ({ commit }, list) {
-    try {
-      await db.get('texes').push(list).write()
-      console.log(db.get('texes').size().value())
-      return true
-    } catch (error) {
-      console.log(error)
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        db.set('taxes', list).write()
+        commit('set_tax_total', db.get('taxes').size().value())
+        resolve(true)
+      } catch (error) {
+        reject(error)
+      }
+    })
+  },
+  async cleanSeedData ({ commit }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        db.set('taxes', []).write()
+        commit('set_tax_list', [])
+        commit('set_tax_total', db.get('taxes').size().value())
+        resolve(true)
+      } catch (error) {
+        reject(error)
+      }
+    })
   }
 }
 
 export default {
   state,
-  getters,
   mutations,
   actions
 }

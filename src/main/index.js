@@ -2,7 +2,8 @@
 
 import { app, BrowserWindow } from 'electron'
 import '../renderer/store'
-
+import path from 'path'
+import os from 'os'
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -33,7 +34,9 @@ function createWindow () {
   })
 
   if (process.env.NODE_ENV === 'development') {
-    BrowserWindow.addDevToolsExtension('/Users/Administrator/AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/5.3.3_0')
+    BrowserWindow.addDevToolsExtension(
+      path.join(os.homedir(), '/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/5.3.3_0')
+    )
   }
 }
 

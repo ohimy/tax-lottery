@@ -3,6 +3,7 @@
     <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload="handleUpload">
       <Button icon="ios-cloud-upload-outline">导入</Button>
     </Upload>
+    <Button icon="ios-cloud-upload-outline" @click="cleanList">清空数据</Button>
     <Button icon="ios-cloud-upload-outline" @click="filterList">计算奖票</Button>
     <Table :columns="taxColumns" :data="list"></Table>
     <Page v-if="total > 0" :current="listQuery.page" :page-size="listQuery.size" :total="total" show-total @on-change="pageChange" />
@@ -44,17 +45,17 @@ export default {
   },
   computed: {
     list() {
-      return this.$store.state.Seed.list
+      return this.$store.state.seed.taxList
     },
     total() {
-      return 20
+      return this.$store.state.seed.taxTotal
     }
   },
   methods: {
     lotteryCount(amount) {
       return amount > 2000 ? 10 : parseInt(amount / 200)
     },
-    pageChange(pageNo) {
+    pageChange(pageNo = 1) {
       this.$store.dispatch('fetchTaxList', {
         page: pageNo,
         size: 20
@@ -67,7 +68,7 @@ export default {
       FileReader.prototype.readAsBinaryString = function(f) {
         let binary = ''
         const reader = new FileReader()
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
           // 读取成Uint8Array，再转换为Unicode编码（Unicode占两个字节）
           const bytes = new Uint8Array(reader.result)
           const length = bytes.byteLength
@@ -79,12 +80,16 @@ export default {
             type: 'binary'
           })
           const outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
-          that.$store.dispatch('importSeedData', outdata)
+          await that.$store.dispatch('importSeedData', outdata)
+          that.pageChange()
         }
         reader.readAsArrayBuffer(f)
       }
       reader.readAsBinaryString(file)
       return false
+    },
+    async cleanList() {
+      await this.$store.dispatch('cleanSeedData')
     },
     filterList() {
       this.list.forEach(element => {
