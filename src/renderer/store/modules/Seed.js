@@ -1,24 +1,25 @@
 const state = {
-  total: 0,
-  list: []
+  list: [],
+  lotteries: []
 }
 
 const getters = {
-  total: state => state.total,
   list: state => state.list
 }
 
 const mutations = {
-  COMPOSE_RESULTS: (state, list, total) => {
+  COMPOSE_RESULTS: (state, list) => {
     state.list = list
-    state.total = total
+  },
+  PUSH_LOTTERIES: (state, lottery) => {
+    state.lotteries.push(lottery)
   }
 }
 
 const actions = {
-  async importSeedData ({ commit }, list, total) {
+  async importSeedData ({ commit }, list) {
     try {
-      commit('COMPOSE_RESULTS', list, total)
+      commit('COMPOSE_RESULTS', list)
       return true
     } catch (error) {
       console.log(error)

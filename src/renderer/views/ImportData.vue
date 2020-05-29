@@ -3,27 +3,67 @@
     <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload="handleUpload">
       <Button icon="ios-cloud-upload-outline">导入</Button>
     </Upload>
-    {{ 0 }}
-    {{ total || '无数据' }}
+    <Button icon="ios-cloud-upload-outline" @click="filterList">计算奖票</Button>
+    <Table :columns="taxColumns" :data="taxes"></Table>
+    <Page v-if="total > 0" :current="listQuery.page" :page-size="listQuery.size" :total="total" show-total @on-change="pageChange" />
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
 import XLSX from 'xlsx'
 export default {
   name: 'ImportDataPage',
   data() {
-    return {}
+    return {
+      taxes: [],
+      listQuery: {
+        page: 1,
+        size: 20
+      },
+      taxColumns: [
+        {
+          title: '编号',
+          key: 'no'
+        },
+        {
+          title: '发票号码',
+          key: 'code'
+        },
+        {
+          title: '金额',
+          key: 'amount'
+        },
+        {
+          title: '奖票数量',
+          render: (h, { row }) => {
+            return h('span', this.lotteryCount(row.amount))
+          }
+        }
+      ]
+    }
+  },
+  mounted() {
+    this.pageChange(1)
   },
   computed: {
-    ...mapGetters(['total', 'list'])
+    list() {
+      return this.$store.state.Seed.list
+    },
+    total() {
+      return this.$store.state.Seed.list.length
+    }
   },
   methods: {
-    ...mapActions(['importSeedData']),
+    lotteryCount(amount) {
+      return amount > 2000 ? 10 : parseInt(amount / 200)
+    },
+    pageChange(pageNo) {
+      const offset = (pageNo - 1) * this.listQuery.size
+      this.taxes = (offset + this.listQuery.size >= this.list.length) ? this.list.slice(offset, this.list.length) : this.list.slice(offset, offset + this.listQuery.size)
+    },
     handleUpload(file) {
-      const reader = new FileReader()
       let that = this
+      const reader = new FileReader()
       // 重写FileReader上的readAsBinaryString方法
       FileReader.prototype.readAsBinaryString = function(f) {
         let binary = ''
@@ -40,13 +80,25 @@ export default {
             type: 'binary'
           })
           const outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
-          // that.importSeedData(outdata, outdata.length)
-          console.log(outdata, outdata.length)
+          that.$store.commit('COMPOSE_RESULTS', outdata)
         }
         reader.readAsArrayBuffer(f)
       }
       reader.readAsBinaryString(file)
       return false
+    },
+    filterList() {
+      this.list.forEach(element => {
+        if (this.lotteryCount(element.amount) > 0) {
+          for (let index = 0; index < this.lotteryCount(element.amount); index++) {
+            this.$store.commit('PUSH_LOTTERIES', {
+              no: element.no,
+              code: element.code
+            })
+            console.log(element.no)
+          }
+        }
+      })
     }
   }
 }

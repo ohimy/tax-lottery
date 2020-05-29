@@ -1,7 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
-// import '../renderer/store'
+import '../renderer/store'
 
 /**
  * Set `__static` path to static files in production
@@ -31,6 +31,10 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  if (process.env.NODE_ENV === 'development') {
+    BrowserWindow.addDevToolsExtension('/Users/Administrator/AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/5.3.3_0')
+  }
 }
 
 app.on('ready', createWindow)
