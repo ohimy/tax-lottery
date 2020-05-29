@@ -10,7 +10,7 @@
     <div class="main">
       <div class="lottery">
         <!-- 未开始抽奖 -->
-        <div class="result-box result-box-info" v-if="true">
+        <div class="result-box result-box-info">
           <p>总发票数 {{ taxTotal }}</p>
           <p>总奖票数 {{ lotteryTotal }}</p>
         </div>
@@ -28,6 +28,20 @@
           </div>
         </div>        
         <!-- 三等奖抽奖结果 -->
+        <Carousel loop>
+          <CarouselItem>
+            <div class="demo-carousel">1</div>
+          </CarouselItem>
+          <CarouselItem>
+            <div class="demo-carousel">2</div>
+          </CarouselItem>
+          <CarouselItem>
+            <div class="demo-carousel">3</div>
+          </CarouselItem>
+          <CarouselItem>
+            <div class="demo-carousel">4</div>
+          </CarouselItem>
+        </Carousel>
       </div>
       <button class="primary-btn" @click="lottery(10)">开始抽奖</button>
     </div>
