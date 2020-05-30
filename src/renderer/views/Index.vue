@@ -1,56 +1,80 @@
 <template>
   <div class="app-container">
-    <div class="prize">
-      <div class="prize-main">
-        <h1 class="prize-title">{{ prize.title }}</h1>
-        <p class="prize-desc">{{ prize.desc }}</p>
-      </div>
-      <img class="prize-img" :src="prize.img">
-    </div>
     <div class="main">
-      <div class="lottery">
-        <!-- 未开始抽奖 -->
-        <div v-if="result.length === 0" class="result-box result-box-info">
-          <p>总发票数 {{ taxTotal }}</p>
-          <p>总奖票数 {{ lotteryTotal }}</p>
-        </div>    
-        <!-- 抽奖结果 -->
-        <div class="result-box-first">
-          <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item.code }}</p>
-            <p>{{ item.no }}</p>
+      <div class="list" v-if="lotteryTotal > 0">
+        <router-link :to="{name:'PrizeIndex', query: item}" v-for="item in prize" :key="item.title" class="prize">
+          <div class="prize-main">
+            <h1 class="prize-title">{{ item.title }}</h1>
+            <p class="prize-desc">{{ item.desc }}</p>
           </div>
-        </div>  
+          <img class="prize-img" :src="item.img">
+        </router-link>
       </div>
-      <button class="primary-btn" @click="lottery" :disabled="result.length > 0">开始抽奖</button>
+      <div class="list" v-if="lotteryTotal == 0">
+        <div class="prize" v-for="item in prize" :key="item.title">
+          <div class="prize-main">
+            <h1 class="prize-title">{{ item.title }}</h1>
+            <p class="prize-desc">{{ item.desc }}</p>
+          </div>
+          <img class="prize-img" :src="item.img">
+        </div>
+      </div>
+      <div class="sd">
+        <div class="rule">
+          <h3 class="sd-title">抽奖规则</h3>
+          <div class="sd-con">
+            <p>1、发票金额满200元，记1次抽奖奖票，每人最高拥有10张奖票</p>
+            <p>2、奖票计算生成放入奖票池中，将进行打乱处理</p>
+            <p>3、中奖后，发票及相应的奖票将不再参与后续奖项抽取</p>
+            <p>4、奖项图片仅供参考，奖品以实际物品为准</p>
+          </div>
+        </div>
+        <div class="data">
+          <h3 class="sd-title">数据</h3>
+          <div class="sd-con">
+            <p>总发票数 {{ taxTotal }}</p>
+            <p>总奖票数 {{ lotteryTotal }}</p>
+          </div>
+          <div class="sd-con">
+            <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload="handleUpload">
+              <Button icon="ios-cloud-upload-outline">导入</Button>
+            </Upload>
+            <div>
+              <Button @click="filterList">计算奖票</Button>
+              <Button @click="shuffleList">打乱奖池</Button>
+            </div>
+            <div class="sd-con">
+              <Button @click="cleanList">清空数据</Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import XLSX from 'xlsx'
   export default {
     name: 'IndexPage',
-    data () {
+    data() {
       return {
-        prize: this.$route.query,
-        result: []
-      }
-    },
-    created() {
-      const key = this.$route.query.key
-      switch (key) {
-        case 'firstLottery':
-          this.result = this.firstLottery
-          break
-        case 'secondLottery':
-          this.result = this.secondLottery
-          break
-        case 'thirdLottery':
-          this.result = this.thirdLottery
-          break
-        default:
-          this.$Message.error('没有这个奖项')
-          break
+        prize: [{
+          title: '一等奖 1个',
+          img: '../assets/bmw.png',
+          desc: '华晨宝马3系轿车1辆 价值¥300000',
+          key: 'firstLottery'
+        }, {
+          title: '二等奖 10个',
+          img: '../assets/yuexiang.png',
+          desc: '长安汽车悦翔轿车1辆 价值¥30000',
+          key: 'secondLottery'
+        }, {
+          title: '三等奖 100个',
+          img: '../assets/quan.png',
+          desc: '5000元家用电器现金消费券',
+          key: 'thirdLottery'
+        }]
       }
     },
     computed: {
@@ -60,35 +84,56 @@
       lotteryTotal() {
         return this.$store.state.seed.lotteryTotal
       },
-      firstLottery() {
-        return this.$store.state.seed.firstLottery
+      firstLotteryIsOver() {
+        return this.$store.state.seed.firstLottery.length === 1
       },
-      secondLottery() {
-        return this.$store.state.seed.secondLottery
+      secondLotteryIsOver() {
+        return this.$store.state.seed.secondLottery.length === 10
       },
-      thirdLottery() {
-        return this.$store.state.seed.thirdLottery
+      thirdLotteryIsOver() {
+        return this.$store.state.seed.thirdLottery.length === 100
       }
     },
     methods: {
-      lottery() {
-        switch (this.prize.key) {
-          case 'firstLottery':
-            this.$store.dispatch('lottery', 1)
-            this.result = this.firstLottery
-            break
-          case 'secondLottery':
-            this.$store.dispatch('lottery', 2)
-            this.result = this.secondLottery
-            break
-          case 'thirdLottery':
-            this.$store.dispatch('lottery', 3)
-            this.result = this.thirdLottery
-            break
-          default:
-            this.$Message.error('没有这个奖项')
-            break
+      handleUpload(file) {
+        let that = this
+        const reader = new FileReader()
+        // 重写FileReader上的readAsBinaryString方法
+        FileReader.prototype.readAsBinaryString = async function(f) {
+          let binary = ''
+          const reader = new FileReader()
+          reader.onload = async function(e) {
+            // 读取成Uint8Array，再转换为Unicode编码（Unicode占两个字节）
+            const bytes = new Uint8Array(reader.result)
+            const length = bytes.byteLength
+            for (let i = 0; i < length; i++) {
+              binary += String.fromCharCode(bytes[i])
+            }
+            // 接下来就是xlsx了，具体可看api
+            const wb = XLSX.read(binary, {
+              type: 'binary'
+            })
+            const outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
+            await that.$store.dispatch('importSeedData', outdata)
+            that.$Message.success('发票数据导入成功')
+          }
+          reader.readAsArrayBuffer(f)
         }
+        reader.readAsBinaryString(file)
+        return false
+      },
+      async cleanList() {
+        await this.$store.dispatch('cleanSeedData')
+        this.$Message.success('数据清除成功')
+      },
+      async filterList() {
+        await this.$store.dispatch('filterSeedData')
+        this.$Message.success('奖票数据计算完成')
+        // this.$router.push('/lotteries')
+      },
+      async shuffleList() {
+        await this.$store.dispatch('shuffle')
+        this.$Message.success('奖池数据已打乱')
       }
     }
   }
@@ -101,18 +146,31 @@
 	align-items: center;
 	justify-content: center;
 }
+.main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 .prize {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
   justify-content: space-between;
-  margin: 30px 0px 0px 0px;
+  margin: 50px 0px 0px 0px;
+  padding: 20px;
+  border: 2px solid #FFFFFF;
+  border-radius: 5px;
+}
+.prize:hover {
+  border: 2px solid #FF3333;
+  cursor: pointer;
 }
 .prize-title {
 	font-size: 22px;
 	line-height: 1.2;
-	font-weight: 400;
-	color: #17233d;
+	font-weight: 600;
+	color: #FF3333;
 }
 .prize-desc {
 	margin: 20px 0px 0px 0px;
@@ -127,124 +185,23 @@
 	width: 100px;
 	height: 100px;
 }
-.lottery {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	margin: 5vh 0px 0px 0px;
+.sd{
+  margin: 80px 0px 0px 150px;
 }
-.main {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-}
-.result-box {
-	display: flex;
-}
-.result-box-info {
-  flex-direction: column;
-	flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-	line-height: 2;
-	font-weight: 400;
-	color: #888888;
-  font-style: italic;
-  width: 80vw;
-	height: 30vh;
-  margin: 8px 0px 0px 0px;
-}
-.result-box-frist{
-  flex-direction: row;
-	flex-wrap: wrap;
-  justify-content: center;
-  text-align: center;
-  width: 80vw;
-	height: 20vh;
-  margin: 5vh 0px;
-}
-.result-box-frist .result-item{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  font-size: 38px;
+.sd-title{
+	font-size: 16px;
 	line-height: 1.2;
-  letter-spacing: 3px;
 	font-weight: 400;
-	color: #FFFFFF;
-	background: #FF3333;
-	padding: 15px 25px;
-	border-radius: 5px;
-  width: 50%;
+	color: #17233d;
 }
-.result-box-second{
-  flex-direction: row;
-	flex-wrap: wrap;
-  justify-content: space-between;
-  width: 80vw;
-	height: 20vh;
-  margin: 5vh 0px;
-}
-.result-box-second .result-item {
-	font-size: 26px;
-	line-height: 1.1;
+.sd-con {
+  margin: 10px 0px 0px 0px;
+  font-size: 14px;
+	line-height: 1.8;
 	font-weight: 400;
-	color: #FFFFFF;
-	background: #FF3333;
-	padding: 5px 10px;
-	margin: 0px 0px 20px 0px;
-	border-radius: 5px;
+	color: #666666;
 }
-.result-box-third {
-  flex-direction: row;
-	flex-wrap: wrap;
-  justify-content: space-between;
-  width: 80vw;
-	height: 20vh;
-  margin: 5vh 0px;
-}
-.result-box-third .result-item {
-  display: block;
-}
-.demo-carousel{
-  display: block;
-  height: 200px;
-  background: #ff0;
-}
-.primary-btn {
-	display: inline-block;
-	font-weight: 400;
-	text-align: center;
-	vertical-align: middle;
-	touch-action: manipulation;
-	cursor: pointer;
-	background-image: none;
-	white-space: nowrap;
-	user-select: none;
-	height: 50px;
-	padding: 0 30px;
-	font-size: 20px;
-	border-radius: 4px;
-	transition: color .2s linear,background-color .2s linear,border .2s linear,box-shadow .2s linear;
-	color: #ffffff;
-	background: linear-gradient(180deg, #ff6600, #ff3300);
-	border: 0 none;
-	margin: 8vh 0px 0px 0px;
-}
-.primary-btn:hover {
-	background: linear-gradient(180deg, #ff3300, #ff1100);
-}
-.primary-btn:focus {
-	background: linear-gradient(180deg, #ff1100, #ff3300);
-	box-shadow: 1px 1px 5px rgba(0, 0, 0, .2) inset;
-	outline: 0;
-}
-.primary-btn:disabled {
-	background: #f7f7f7;
-	border: 1px solid #dcdee2;
-	color: #c5c8ce;
+.data {
+  margin: 50px 0px 0px 0px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="copyright">
-      <p>万州区监制 新十年科技制作 抽奖程序核心算法已公证</p>
+      <p>万州区监制 新十年科技制作 抽奖程序核心算法代码已司法公证</p>
     </div>
   </div>
 </template>
