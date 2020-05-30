@@ -41,8 +41,8 @@
               <Button icon="ios-cloud-upload-outline" :disabled="taxTotal > 0">导入</Button>
             </Upload>
             <div>
-              <Button @click="filterList" :disabled="lotteryTotal > 0">计算奖票</Button>
-              <Button @click="shuffleList">打乱奖池</Button>
+              <Button @click="filterList" :disabled="taxTotal === 0">计算奖票</Button>
+              <Button @click="shuffleList" :disabled="lotteryTotal === 0">打乱奖池</Button>
             </div>
             <div class="sd-con">
               <Button @click="cleanList" :disabled="!taxTotal > 0">清空数据</Button>

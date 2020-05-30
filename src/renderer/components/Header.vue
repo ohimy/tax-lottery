@@ -41,30 +41,27 @@ export default {
     exportData() {
       // 一等奖数据
       let firstArr = []
-      firstArr[0] = ['编号', '代码']
+      firstArr[0] = ['代码']
       this.$store.state.seed.firstLottery.forEach(function(val, idx, array) {
         // 实例二位数组空间
         firstArr[idx + 1] = []
-        firstArr[idx + 1][0] = val['code']
-        firstArr[idx + 1][1] = val['no']
+        firstArr[idx + 1][0] = val
       })
       // 二等奖数据
       let secondArr = []
-      secondArr[0] = ['编号', '代码']
+      secondArr[0] = ['代码']
       this.$store.state.seed.secondLottery.forEach(function(val, idx, array) {
         // 实例二位数组空间
         secondArr[idx + 1] = []
-        secondArr[idx + 1][0] = val['code']
-        secondArr[idx + 1][1] = val['no']
+        secondArr[idx + 1][0] = val
       })
       // 三等奖数据
       let thirdArr = []
-      thirdArr[0] = ['编号', '代码']
+      thirdArr[0] = ['代码']
       this.$store.state.seed.thirdLottery.forEach(function(val, idx, array) {
         // 实例二位数组空间
         thirdArr[idx + 1] = []
-        thirdArr[idx + 1][0] = val['code']
-        thirdArr[idx + 1][1] = val['no']
+        thirdArr[idx + 1][0] = val
       })
       // 创建sheet
       const wb = XLSX.utils.book_new()
@@ -74,7 +71,7 @@ export default {
       XLSX.utils.book_append_sheet(wb, ws1, '一等奖')
       XLSX.utils.book_append_sheet(wb, ws2, '二等奖')
       XLSX.utils.book_append_sheet(wb, ws3, '三等奖')
-      XLSX.writeFile(wb, 'C://获奖名单.xlsx')
+      XLSX.writeFile(wb, '获奖名单.xlsx')
       this.$Message.success('名单已保存到C盘根目录下')
     }
   }

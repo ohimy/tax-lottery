@@ -17,38 +17,33 @@
         <!-- 抽奖结果 -->
         <div class="result-box result-box-frist" v-if="stat == 1 && result.length == 0 && prize.key == 'firstLottery'">
           <div class="result-item">
-            <p>{{ rollShow[0].code || ''}}</p>
-            <p> {{ rollShow[0].no || ''}}</p>
+            <!-- <p>{{ rollShow[0].code || ''}}</p> -->
+            <p> {{ rollShow[0]}}</p>
           </div>
         </div>
         <div class="result-box result-box-frist" v-if="result.length > 0 & prize.key == 'firstLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item.code }}</p>
-            <p>{{ item.no }}</p>
+            <p>{{ item }}</p>
           </div>
         </div>
         <div class="result-box result-box-second" v-if="stat == 1 && result.length == 0 && prize.key == 'secondLottery'">
           <div class="result-item" v-for="(item, index) in rollArr" :key="index">
-             <p>{{ rollShow[index].code || ''}}</p>
-             <p>{{ rollShow[index].no || ''}}</p>
+             <p>{{ rollShow[index]}}</p>
           </div>
         </div>
         <div class="result-box result-box-second" v-if="result.length > 0 & prize.key == 'secondLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item.code }}</p>
-            <p>{{ item.no }}</p>
+            <p>{{ item }}</p>
           </div>
         </div>
         <div class="result-box result-box-third" v-if="stat == 1 && result.length == 0 && prize.key == 'thirdLottery'">
           <div class="result-item" v-for="(item, index) in rollArr" :key="index">
-             <p>{{ rollShow[index].code || '' }}</p>
-             <p>{{ rollShow[index].no || ''}}</p>
+             <p>{{ rollShow[index] }}</p>
           </div>
         </div>
         <div class="result-box result-box-third" v-if="result.length > 0 & prize.key == 'thirdLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item.code }}</p>
-            <p>{{ item.no }}</p>
+            <p>{{ item }}</p>
           </div>
         </div>
       </div>
