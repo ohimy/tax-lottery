@@ -2,48 +2,27 @@
   <div class="app-container">
     <div class="prize">
       <div class="prize-main">
-        <h1 class="prize-title">一等奖 1个</h1>
-        <p class="prize-desc">华晨宝马3系轿车1辆 价值¥30000</p>
+        <h1 class="prize-title">{{ prize.title }}</h1>
+        <p class="prize-desc">{{ prize.desc }}</p>
       </div>
-      <img class="prize-img" src="../assets/bmw.png" alt="宝马3系">
+      <img class="prize-img" :src="prize.img">
     </div>
     <div class="main">
       <div class="lottery">
         <!-- 未开始抽奖 -->
-        <div class="result-box result-box-info">
+        <div v-if="result.length === 0" class="result-box result-box-info">
           <p>总发票数 {{ taxTotal }}</p>
           <p>总奖票数 {{ lotteryTotal }}</p>
-        </div>
-        <!-- 一等奖抽奖结果 -->
-        <div class="result-box result-box-frist" v-if="false">
-          <div class="result-item">
-            <p>050001800104 31596947</p>
+        </div>    
+        <!-- 抽奖结果 -->
+        <div class="result-box-first">
+          <div class="result-item" v-for="(item, index) in result" :key="index">
+            <p>{{ item.code }}</p>
+            <p>{{ item.no }}</p>
           </div>
-        </div>   
-        <!-- 二等奖抽奖结果 -->
-        <div class="result-box result-box-second" v-if="false">
-          <div class="result-item" v-for="(item, index) in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" :key="index">
-            <p>050001800104</p>
-            <p>31596947</p>
-          </div>
-        </div>        
-        <!-- 三等奖抽奖结果 -->
-        <Carousel loop>
-          <CarouselItem>
-            <div class="demo-carousel">1</div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="demo-carousel">2</div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="demo-carousel">3</div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="demo-carousel">4</div>
-          </CarouselItem>
-        </Carousel>
+        </div>  
       </div>
-      <button class="primary-btn" @click="lottery(3)">开始抽奖</button>
+      <button class="primary-btn" @click="lottery" :disabled="result.length > 0">开始抽奖</button>
     </div>
   </div>
 </template>
@@ -53,6 +32,25 @@
     name: 'IndexPage',
     data () {
       return {
+        prize: this.$route.query,
+        result: []
+      }
+    },
+    created() {
+      const key = this.$route.query.key
+      switch (key) {
+        case 'firstLottery':
+          this.result = this.firstLottery
+          break
+        case 'secondLottery':
+          this.result = this.secondLottery
+          break
+        case 'thirdLottery':
+          this.result = this.thirdLottery
+          break
+        default:
+          this.$Message.error('没有这个奖项')
+          break
       }
     },
     computed: {
@@ -61,11 +59,36 @@
       },
       lotteryTotal() {
         return this.$store.state.seed.lotteryTotal
+      },
+      firstLottery() {
+        return this.$store.state.seed.firstLottery
+      },
+      secondLottery() {
+        return this.$store.state.seed.secondLottery
+      },
+      thirdLottery() {
+        return this.$store.state.seed.thirdLottery
       }
     },
     methods: {
-      lottery(count) {
-        this.$store.dispatch('lottery', count)
+      lottery() {
+        switch (this.prize.key) {
+          case 'firstLottery':
+            this.$store.dispatch('lottery', 1)
+            this.result = this.firstLottery
+            break
+          case 'secondLottery':
+            this.$store.dispatch('lottery', 2)
+            this.result = this.secondLottery
+            break
+          case 'thirdLottery':
+            this.$store.dispatch('lottery', 3)
+            this.result = this.thirdLottery
+            break
+          default:
+            this.$Message.error('没有这个奖项')
+            break
+        }
       }
     }
   }
@@ -82,6 +105,7 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+  justify-content: space-between;
   margin: 30px 0px 0px 0px;
 }
 .prize-title {
