@@ -97,11 +97,11 @@ const actions = {
   async cleanSeedData ({ commit }) {
     return new Promise(async (resolve, reject) => {
       try {
-        db.set('taxes', []).write()
-        db.set('lotteries', []).write()
-        db.set('first_lottery', []).write()
-        db.set('second_lottery', []).write()
-        db.set('third_lottery', []).write()
+        await db.set('taxes', []).write()
+        await db.set('lotteries', []).write()
+        await db.set('first_lottery', []).write()
+        await db.set('second_lottery', []).write()
+        await db.set('third_lottery', []).write()
         commit('set_tax_list', [])
         commit('set_tax_total', 0)
         commit('set_lottery_list', [])

@@ -71,19 +71,16 @@
       }
     },
     methods: {
-      lottery() {
+      async lottery() {
         switch (this.prize.key) {
           case 'firstLottery':
-            this.$store.dispatch('lottery', 1)
-            this.result = this.firstLottery
+            this.result = await this.$store.dispatch('lottery', 1)
             break
           case 'secondLottery':
-            this.$store.dispatch('lottery', 2)
-            this.result = this.secondLottery
+            this.result = await this.$store.dispatch('lottery', 2)
             break
           case 'thirdLottery':
-            this.$store.dispatch('lottery', 3)
-            this.result = this.thirdLottery
+            this.result = await this.$store.dispatch('lottery', 3)
             break
           default:
             this.$Message.error('没有这个奖项')

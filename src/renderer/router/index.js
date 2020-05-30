@@ -6,6 +6,11 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '/prize',
+      name: 'PrizeIndex',
+      component: require('@/views/Prize').default
+    },
+    {
       path: '/',
       name: 'Home',
       component: require('@/views/Index').default
@@ -14,11 +19,6 @@ export default new Router({
       path: '/seeds',
       name: 'SeedIndex',
       component: require('@/views/Seed').default
-    },
-    {
-      path: '/prize',
-      name: 'PrizeIndex',
-      component: require('@/views/Prize').default
     },
     {
       path: '/lotteries',

@@ -7,7 +7,7 @@
             <h1 class="prize-title">{{ item.title }}</h1>
             <p class="prize-desc">{{ item.desc }}</p>
           </div>
-          <img class="prize-img" :src="item.img">
+          <img v-if="item.img" class="prize-img" :src="item.img">
         </router-link>
       </div>
       <div class="sd">
@@ -48,17 +48,17 @@
       return {
         prize: [{
           title: '一等奖 1个',
-          img: '../renderer/assets/bmw.png',
+          img: './static/bmw.png',
           desc: '华晨宝马3系轿车1辆 价值¥300000',
           key: 'firstLottery'
         }, {
           title: '二等奖 10个',
-          img: 'yuexiang.png',
+          img: './static/yuexiang.png',
           desc: '长安汽车悦翔轿车1辆 价值¥30000',
           key: 'secondLottery'
         }, {
           title: '三等奖 100个',
-          img: 'quan.png',
+          img: './static/quan.png',
           desc: '5000元家用电器现金消费券',
           key: 'thirdLottery'
         }]

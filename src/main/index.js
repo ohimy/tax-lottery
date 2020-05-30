@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, Menu, BrowserWindow } from 'electron'
 import '../renderer/store'
 // import path from 'path'
 // import os from 'os'
@@ -21,6 +21,9 @@ function createWindow () {
   /**
    * Initial window options
    */
+  // 隐藏菜单栏
+  Menu.setApplicationMenu(null)
+
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
