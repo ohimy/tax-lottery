@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <div class="hd"><h1>GO 购 够快乐大出发、激情大采购活动抽奖</h1></div>
     <div class="main">
       <div class="list" v-if="lotteryTotal > 0">
         <router-link :to="{name:'PrizeIndex', query: item}" v-for="item in prize" :key="item.title" class="prize">
@@ -37,14 +38,14 @@
           </div>
           <div class="sd-con">
             <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload="handleUpload">
-              <Button icon="ios-cloud-upload-outline">导入</Button>
+              <Button icon="ios-cloud-upload-outline" :disabled="taxTotal > 0">导入</Button>
             </Upload>
             <div>
-              <Button @click="filterList">计算奖票</Button>
+              <Button @click="filterList" :disabled="lotteryTotal > 0">计算奖票</Button>
               <Button @click="shuffleList">打乱奖池</Button>
             </div>
             <div class="sd-con">
-              <Button @click="cleanList">清空数据</Button>
+              <Button @click="cleanList" :disabled="!taxTotal > 0">清空数据</Button>
             </div>
           </div>
         </div>

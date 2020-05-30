@@ -84,6 +84,10 @@ export default {
 <style scoped>
 .header {
   padding: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 .home {
   display: flex;
