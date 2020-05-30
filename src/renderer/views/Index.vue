@@ -61,17 +61,17 @@
       return {
         prize: [{
           title: '一等奖 1个',
-          img: '../static/bmw.png',
+          img: 'static/bmw.png',
           desc: '华晨宝马3系轿车1辆 价值¥300000',
           key: 'firstLottery'
         }, {
           title: '二等奖 10个',
-          img: '../static/yuexiang.png',
+          img: 'static/yuexiang.png',
           desc: '长安汽车悦翔轿车1辆 价值¥30000',
           key: 'secondLottery'
         }, {
           title: '三等奖 100个',
-          img: '../static/quan.png',
+          img: 'static/quan.png',
           desc: '5000元家用电器现金消费券',
           key: 'thirdLottery'
         }]
