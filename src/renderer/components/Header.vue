@@ -2,12 +2,12 @@
   <div class="app-container">
     <div class="header">
       <div>
-        <router-link :to="{name: 'PrizeIndex'}" v-if="this.$route.name != 'PrizeIndex'" class="home">
+        <router-link :to="{name: 'Home'}" v-if="this.$route.name != 'Home'" class="home">
           <img class="home-icon" src="../assets/home.png" alt="首页图片">
           <span class="home-text">返回首页</span>
         </router-link>
-        <!-- <router-link :to="{name:'Home'}"> 
-          <span :class="this.$route.name == 'Home' ? 'menu-current' : 'menu'">抽奖界面</span>
+        <!-- <router-link :to="{name:'PrizeIndex'}"> 
+          <span :class="this.$route.name == 'PrizeIndex' ? 'menu-current' : 'menu'">抽奖界面</span>
         </router-link>
         <router-link :to="{name:'SeedIndex'}">
           <span :class="this.$route.name == 'SeedIndex' ? 'menu-current' : 'menu'" @click="exportData">数据导入</span>

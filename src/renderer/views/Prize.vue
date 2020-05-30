@@ -1,68 +1,96 @@
 <template>
   <div class="app-container">
+    <div class="prize">
+      <div class="prize-main">
+        <h1 class="prize-title">{{ prize.title }}</h1>
+        <p class="prize-desc">{{ prize.desc }}</p>
+      </div>
+      <img class="prize-img" :src="prize.img">
+    </div>
     <div class="main">
-      <div class="list">
-        <router-link :to="{name:'Home', query: item}" v-for="item in prize" :key="item.title" class="prize">
-          <div class="prize-main">
-            <h1 class="prize-title">{{ item.title }}</h1>
-            <p class="prize-desc">{{ item.desc }}</p>
-          </div>
-          <img v-if="item.img" class="prize-img" :src="item.img">
-        </router-link>
-      </div>
-      <div class="sd">
-        <div class="rule">
-          <h3 class="sd-title">抽奖规则</h3>
-          <div class="sd-con">
-            <p>1、抽奖规则抽奖规则抽奖规则抽奖规则抽奖规则</p>
-            <p>1、抽奖规则抽奖规则抽奖规则抽奖规则抽奖规则</p>
-            <p>1、抽奖规则抽奖规则抽奖规则抽奖规则抽奖规则</p>
-            <p>1、抽奖规则抽奖规则抽奖规则抽奖规则抽奖规则</p>
-            <p>1、抽奖规则抽奖规则抽奖规则抽奖规则抽奖规则</p>
-            <p>1、抽奖规则抽奖规则抽奖规则抽奖规则抽奖规则</p>
+      <div class="lottery">
+        <!-- 未开始抽奖 -->
+        <div v-if="result.length == 0 && stat < 1" class="result-box result-box-info">
+          <p>总发票数 {{ taxTotal }}</p>
+          <p>总奖票数 {{ lotteryTotal }}</p>
+        </div>
+        <!-- 抽奖结果 -->
+        <div class="result-box result-box-frist" v-if="stat == 1 && result.length == 0 && prize.key == 'firstLottery'">
+          <div class="result-item">
+            <p>{{ rollShow.code }}</p>
+            <p>{{ rollShow.no }}</p>
           </div>
         </div>
-        <div class="data">
-          <h3 class="sd-title">数据</h3>
-          <div class="sd-con">
-            <p>总发票数 {{ taxTotal }}</p>
-            <p>总奖票数 {{ lotteryTotal }}</p>
+        <div class="result-box result-box-frist" v-if="result.length > 0 & prize.key == 'firstLottery'">
+          <div class="result-item" v-for="(item, index) in result" :key="index">
+            <p>{{ item.code }}</p>
+            <p>{{ item.no }}</p>
           </div>
-          <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload="handleUpload">
-            <Button icon="ios-cloud-upload-outline">导入</Button>
-          </Upload>
-          <Button icon="ios-cloud-upload-outline" @click="cleanList">清空数据</Button>
-          <Button icon="ios-cloud-upload-outline" @click="filterList">计算奖票</Button>
-          <Button icon="ios-cloud-upload-outline" @click="shuffleList">打乱奖池</Button>
+        </div>
+        <div class="result-box result-box-second" v-if="stat == 1 && result.length == 0 && prize.key == 'secondLottery'">
+          <div class="result-item" v-for="(item, index) in rollArr" :key="index">
+             <p>{{ rollShow.code }}</p>
+             <p>{{ rollShow.no }}</p>
+          </div>
+        </div>
+        <div class="result-box result-box-second" v-if="result.length > 0 & prize.key == 'secondLottery'">
+          <div class="result-item" v-for="(item, index) in result" :key="index">
+            <p>{{ item.code }}</p>
+            <p>{{ item.no }}</p>
+          </div>
+        </div>
+        <div class="result-box result-box-third" v-if="stat == 1 && result.length == 0 && prize.key == 'thirdLottery'">
+          <div class="result-item" v-for="(item, index) in rollArr" :key="index">
+             <p>{{ rollShow.code }}</p>
+             <p>{{ rollShow.no }}</p>
+          </div>
+        </div>
+        <div class="result-box result-box-third" v-if="result.length > 0 & prize.key == 'thirdLottery'">
+          <div class="result-item" v-for="(item, index) in result" :key="index">
+            <p>{{ item.code }}</p>
+            <p>{{ item.no }}</p>
+          </div>
         </div>
       </div>
+      <button v-if="result.length == 0 && stat == 0" class="primary-btn" @click="startLottery">开始抽奖</button>
+      <button v-if="stat == 1" class="primary-btn" @click="lottery" :disabled="result.length > 0">{{ result.length > 0 ? '已开奖' : '抽奖'}}</button>
     </div>
   </div>
 </template>
 
 <script>
-  import XLSX from 'xlsx'
   export default {
     name: 'PrizeIndex',
-    data() {
+    data () {
       return {
-        prize: [{
-          title: '一等奖 1个',
-          img: './static/bmw.png',
-          desc: '华晨宝马3系轿车1辆 价值¥300000',
-          key: 'firstLottery'
-        }, {
-          title: '二等奖 10个',
-          img: './static/yuexiang.png',
-          desc: '长安汽车悦翔轿车1辆 价值¥30000',
-          key: 'secondLottery'
-        }, {
-          title: '三等奖 100个',
-          img: './static/quan.png',
-          desc: '5000元家用电器现金消费券',
-          key: 'thirdLottery'
-        }]
+        prize: this.$route.query,
+        stat: 0, // 摇奖状态 0 未开始 1 开始
+        rollArr: new Array(10),
+        rollShow: [],
+        result: []
       }
+    },
+    created() {
+      const key = this.$route.query.key
+      this.$store.dispatch('fetchLotteryList', {
+        page: 1,
+        size: 500
+      })
+      switch (key) {
+        case 'firstLottery':
+          this.result = this.firstLottery
+          break
+        case 'secondLottery':
+          this.result = this.secondLottery
+          break
+        case 'thirdLottery':
+          this.result = this.thirdLottery
+          break
+        default:
+          this.$Message.error('没有这个奖项')
+          break
+      }
+      this.result.length > 0 ? this.stat = 1 : this.stat = 0
     },
     computed: {
       taxTotal() {
@@ -71,56 +99,59 @@
       lotteryTotal() {
         return this.$store.state.seed.lotteryTotal
       },
-      firstLotteryIsOver() {
-        return this.$store.state.seed.firstLottery.length === 1
+      lotteryList() {
+        return this.$store.state.seed.lotteryList
       },
-      secondLotteryIsOver() {
-        return this.$store.state.seed.secondLottery.length === 10
+      firstLottery() {
+        return this.$store.state.seed.firstLottery
       },
-      thirdLotteryIsOver() {
-        return this.$store.state.seed.thirdLottery.length === 100
+      secondLottery() {
+        return this.$store.state.seed.secondLottery
+      },
+      thirdLottery() {
+        return this.$store.state.seed.thirdLottery
       }
     },
     methods: {
-      handleUpload(file) {
-        let that = this
-        const reader = new FileReader()
-        // 重写FileReader上的readAsBinaryString方法
-        FileReader.prototype.readAsBinaryString = async function(f) {
-          let binary = ''
-          const reader = new FileReader()
-          reader.onload = async function(e) {
-            // 读取成Uint8Array，再转换为Unicode编码（Unicode占两个字节）
-            const bytes = new Uint8Array(reader.result)
-            const length = bytes.byteLength
-            for (let i = 0; i < length; i++) {
-              binary += String.fromCharCode(bytes[i])
-            }
-            // 接下来就是xlsx了，具体可看api
-            const wb = XLSX.read(binary, {
-              type: 'binary'
-            })
-            const outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
-            await that.$store.dispatch('importSeedData', outdata)
-            that.$Message.success('发票数据导入成功')
-          }
-          reader.readAsArrayBuffer(f)
+      randomNum(minNum, maxNum) {
+        switch (arguments.length) {
+          case 1:
+            return parseInt(Math.random() * minNum + 1, 10)
+          case 2:
+            return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10)
+          default:
+            return 0
         }
-        reader.readAsBinaryString(file)
-        return false
       },
-      async cleanList() {
-        await this.$store.dispatch('cleanSeedData')
-        this.$Message.success('数据清除成功')
+      // 开始摇奖
+      startLottery() {
+        this.stat = 1
+        window.setInterval(() => {
+          let _index = this.randomNum(0, this.lotteryList.length)
+          this.rollShow = this.lotteryList[_index]
+        }, 60)
+        console.log(this.lotteryList)
       },
-      async filterList() {
-        await this.$store.dispatch('filterSeedData')
-        this.$Message.success('奖池数据已导入')
-        // this.$router.push('/lotteries')
-      },
-      async shuffleList() {
-        await this.$store.dispatch('shuffle')
-        this.$Message.success('奖池数据已打乱')
+      // 停止摇奖
+      lottery() {
+        window.clearInterval()
+        switch (this.prize.key) {
+          case 'firstLottery':
+            this.$store.dispatch('lottery', 1)
+            this.result = this.firstLottery
+            break
+          case 'secondLottery':
+            this.$store.dispatch('lottery', 2)
+            this.result = this.secondLottery
+            break
+          case 'thirdLottery':
+            this.$store.dispatch('lottery', 3)
+            this.result = this.thirdLottery
+            break
+          default:
+            this.$Message.error('没有这个奖项')
+            break
+        }
       }
     }
   }
@@ -133,31 +164,18 @@
 	align-items: center;
 	justify-content: center;
 }
-.main {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-}
 .prize {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
   justify-content: space-between;
-  margin: 50px 0px 0px 0px;
-  padding: 20px;
-  border: 2px solid #FFFFFF;
-  border-radius: 5px;
-}
-.prize:hover {
-  border: 2px solid #FF3333;
-  cursor: pointer;
+  margin: 30px 0px 0px 0px;
 }
 .prize-title {
 	font-size: 22px;
 	line-height: 1.2;
-	font-weight: 600;
-	color: #FF3333;
+	font-weight: 400;
+	color: #17233d;
 }
 .prize-desc {
 	margin: 20px 0px 0px 0px;
@@ -172,23 +190,130 @@
 	width: 100px;
 	height: 100px;
 }
-.sd{
-  margin: 80px 0px 0px 150px;
+.lottery {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin: 5vh 0px 0px 0px;
 }
-.sd-title{
-	font-size: 16px;
+.main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.result-box {
+	display: flex;
+}
+.result-box-info {
+  flex-direction: column;
+	flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+	line-height: 2;
+	font-weight: 400;
+	color: #888888;
+  font-style: italic;
+  width: 80vw;
+	height: 30vh;
+  margin: 8px 0px 0px 0px;
+}
+.result-box-frist{
+  flex-direction: row;
+	flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  width: 80vw;
+	height: 20vh;
+  margin: 5vh 0px;
+}
+.result-box-frist .result-item{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
 	line-height: 1.2;
+  letter-spacing: 3px;
 	font-weight: 400;
-	color: #17233d;
+	color: #FFFFFF;
+	background: #FF3333;
+	padding: 15px 25px;
+	border-radius: 5px;
 }
-.sd-con {
-  margin: 10px 0px 0px 0px;
-  font-size: 14px;
-	line-height: 1.8;
+.result-box-second{
+  flex-direction: row;
+	flex-wrap: wrap;
+  justify-content: space-between;
+  width: 70vw;
+	height: 20vh;
+  margin: 5vh 0px;
+}
+.result-box-second .result-item {
+	font-size: 26px;
+	line-height: 1.1;
 	font-weight: 400;
-	color: #666666;
+	color: #FFFFFF;
+	background: #FF3333;
+	padding: 5px 10px;
+	margin: 0px 0px 20px 0px;
+	border-radius: 5px;
 }
-.data {
-  margin: 50px 0px 0px 0px;
+.result-box-third {
+  flex-direction: row;
+	flex-wrap: wrap;
+  justify-content: space-between;
+  width: 80vw;
+	height: 20vh;
+  margin: 5vh 0px;
+}
+.result-box-third .result-item {
+	font-size: 26px;
+	line-height: 1.1;
+	font-weight: 400;
+	color: #FFFFFF;
+	background: #FF3333;
+	padding: 5px 10px;
+	margin: 0px 0px 20px 0px;
+	border-radius: 5px;
+}
+.demo-carousel{
+  display: block;
+  height: 200px;
+  background: #ff0;
+}
+.primary-btn {
+	display: inline-block;
+	font-weight: 400;
+	text-align: center;
+	vertical-align: middle;
+	touch-action: manipulation;
+	cursor: pointer;
+	background-image: none;
+	white-space: nowrap;
+	user-select: none;
+	height: 50px;
+	padding: 0 30px;
+	font-size: 20px;
+	border-radius: 4px;
+	transition: color .2s linear,background-color .2s linear,border .2s linear,box-shadow .2s linear;
+	color: #ffffff;
+	background: linear-gradient(180deg, #ff6600, #ff3300);
+	border: 0 none;
+	margin: 8vh 0px 0px 0px;
+}
+.primary-btn:hover {
+	background: linear-gradient(180deg, #ff3300, #ff1100);
+}
+.primary-btn:focus {
+	background: linear-gradient(180deg, #ff1100, #ff3300);
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, .2) inset;
+	outline: 0;
+}
+.primary-btn:disabled {
+	background: #f7f7f7;
+	border: 1px solid #dcdee2;
+	color: #c5c8ce;
 }
 </style>
