@@ -17,8 +17,8 @@
         <!-- 抽奖结果 -->
         <div class="result-box result-box-frist" v-if="stat == 1 && result.length == 0 && prize.key == 'firstLottery'">
           <div class="result-item">
-            <p>{{ rollShow.code }}</p>
-            <p>{{ rollShow.no }}</p>
+            <p>{{ rollShow[0].code || ''}}</p>
+            <p> {{ rollShow[0].no || ''}}</p>
           </div>
         </div>
         <div class="result-box result-box-frist" v-if="result.length > 0 & prize.key == 'firstLottery'">
@@ -29,8 +29,8 @@
         </div>
         <div class="result-box result-box-second" v-if="stat == 1 && result.length == 0 && prize.key == 'secondLottery'">
           <div class="result-item" v-for="(item, index) in rollArr" :key="index">
-             <p>{{ rollShow.code }}</p>
-             <p>{{ rollShow.no }}</p>
+             <p>{{ rollShow[index].code || ''}}</p>
+             <p>{{ rollShow[index].no || ''}}</p>
           </div>
         </div>
         <div class="result-box result-box-second" v-if="result.length > 0 & prize.key == 'secondLottery'">
@@ -41,8 +41,8 @@
         </div>
         <div class="result-box result-box-third" v-if="stat == 1 && result.length == 0 && prize.key == 'thirdLottery'">
           <div class="result-item" v-for="(item, index) in rollArr" :key="index">
-             <p>{{ rollShow.code }}</p>
-             <p>{{ rollShow.no }}</p>
+             <p>{{ rollShow[index].code || '' }}</p>
+             <p>{{ rollShow[index].no || ''}}</p>
           </div>
         </div>
         <div class="result-box result-box-third" v-if="result.length > 0 & prize.key == 'thirdLottery'">
@@ -74,8 +74,9 @@
       const key = this.$route.query.key
       this.$store.dispatch('fetchLotteryList', {
         page: 1,
-        size: 500
+        size: 10000
       })
+      this.rollShow = this.lotteryList.slice(0, 10)
       switch (key) {
         case 'firstLottery':
           this.result = this.firstLottery
@@ -127,10 +128,10 @@
       startLottery() {
         this.stat = 1
         window.setInterval(() => {
-          let _index = this.randomNum(0, this.lotteryList.length)
-          this.rollShow = this.lotteryList[_index]
+          let _start = this.randomNum(0, this.lotteryList.length - 10)
+          let _end = _start + 10
+          this.rollShow = this.lotteryList.slice(_start, _end)
         }, 60)
-        console.log(this.lotteryList)
       },
       // 停止摇奖
       lottery() {
@@ -224,13 +225,13 @@
 	flex-wrap: wrap;
   justify-content: center;
   text-align: center;
-  width: 80vw;
+  min-width: 800px;
 	height: 20vh;
   margin: 5vh 0px;
 }
 .result-box-frist .result-item{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 38px;
@@ -241,6 +242,7 @@
 	background: #FF3333;
 	padding: 15px 25px;
 	border-radius: 5px;
+  width: 100%;
 }
 .result-box-second{
   flex-direction: row;
