@@ -47,8 +47,15 @@
           </div>
         </div>
       </div>
-      <button v-if="prize.key == 'thirdLottery' ? result.length < 100 : result.length == 0 && stat == 0" class="primary-btn" @click="startLottery">开始抽奖</button>
-      <button v-if="stat > 0" class="primary-btn" @click="stopLottery" :disabled="stat > 1">{{ stat > 1 ? '已开奖' : '抽奖' }}</button>
+      <div v-if="prize.key == 'thirdLottery'">
+        <button v-if="thirdLottery.length < 100 && stat !== 1" class="primary-btn" @click="startLottery">开始抽奖</button>
+        <button v-if="thirdLottery.length <= 100 && stat === 1" class="primary-btn" @click="stopLottery">抽奖</button>
+        <button v-if="thirdLottery.length === 100 && stat === 2" class="primary-btn" :disabled="true">已开奖</button>
+      </div>
+      <div v-else>
+        <button v-if="result.length == 0 && stat < 2" class="primary-btn" @click="startLottery">开始抽奖</button>
+        <button v-if="stat > 0" class="primary-btn" @click="stopLottery" :disabled="stat > 1">{{ stat > 1 ? '已开奖' : '抽奖' }}</button>
+      </div>
     </div>
   </div>
 </template>
