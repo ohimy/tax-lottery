@@ -34,6 +34,9 @@ const mutations = {
   set_third_lottery: (state, lottery) => {
     state.thirdLottery = lottery
   },
+  add_third_lottery: (state, lottery) => {
+    state.thirdLottery = state.thirdLottery.concat(lottery)
+  },
   add_no_list: (state, no) => {
     state.noList.push(no)
   }
@@ -167,7 +170,7 @@ const actions = {
           }
           case 3: {
             let list = new Set()
-            while (list.size < 100) {
+            while (list.size < 20) {
               let item = sample(lot)
               if (noList.indexOf(item) === -1) {
                 list.add(item)
@@ -175,9 +178,9 @@ const actions = {
               }
             }
             // 保存到vuex
-            commit('set_third_lottery', Array.from(list))
+            commit('add_third_lottery', Array.from(list))
             // 保存到数据库
-            db.set('third_lottery', Array.from(list)).write()
+            db.set('third_lottery', state.thirdLottery).write()
             resolve(Array.from(list))
             break
           }

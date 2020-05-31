@@ -47,7 +47,7 @@
           </div>
         </div>
       </div>
-      <button v-if="result.length == 0 && stat == 0" class="primary-btn" @click="startLottery">开始抽奖</button>
+      <button v-if="prize.key == 'thirdLottery' ? result.length < 100 : result.length == 0 && stat == 0" class="primary-btn" @click="startLottery">开始抽奖</button>
       <button v-if="stat > 0" class="primary-btn" @click="stopLottery" :disabled="stat > 1">{{ stat > 1 ? '已开奖' : '抽奖' }}</button>
     </div>
   </div>
@@ -142,8 +142,7 @@
             this.result = this.secondLottery
             break
           case 'thirdLottery':
-            await this.$store.dispatch('lottery', 3)
-            this.result = this.thirdLottery
+            this.result = await this.$store.dispatch('lottery', 3)
             break
           default:
             this.$Message.error('没有这个奖项')
