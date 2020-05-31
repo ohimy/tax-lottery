@@ -21,13 +21,13 @@
             <p> {{ rollShow[0]}}</p>
           </div>
         </div>
-        <div class="result-box result-box-frist" v-if="prize.key == 'firstLottery'">
+        <div class="result-box result-box-frist" v-if="stat == 2 && prize.key == 'firstLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
             <p>{{ item }}</p>
           </div>
         </div>
         <div class="result-box result-box-second" v-if="stat == 1 && prize.key == 'secondLottery'">
-          <div class="result-item" v-for="(item, index) in rollArr" :key="index">
+          <div class="result-item" v-for="(item, index) in rollArrs" :key="index">
              <p>{{ rollShow[index]}}</p>
           </div>
         </div>
@@ -60,7 +60,8 @@
       return {
         prize: this.$route.query,
         stat: 0, // 摇奖状态 0 未开始 1 开始
-        rollArr: new Array(10),
+        rollArrs: new Array(10),
+        rollArr: new Array(20),
         rollShow: [],
         result: []
       }
@@ -71,7 +72,7 @@
         page: 1,
         size: 10000
       })
-      this.rollShow = this.lotteryList.slice(0, 10)
+      this.rollShow = this.lotteryList.slice(0, 20)
       switch (key) {
         case 'firstLottery':
           this.result = this.firstLottery
@@ -120,18 +121,17 @@
         }
       },
       // 开始摇奖
-      async startLottery() {
+      startLottery() {
         this.stat = 1
         window.setInterval(() => {
-          let _start = this.randomNum(0, this.lotteryList.length - 10)
-          let _end = _start + 10
+          let _start = this.randomNum(0, this.lotteryList.length - this.rollArr.length)
+          let _end = _start + this.rollArr.length
           this.rollShow = this.lotteryList.slice(_start, _end)
         }, 60)
-        await this.lottery()
+        this.lottery()
       },
-      // 停止摇奖
+      // 摇奖
       async lottery() {
-        window.clearInterval()
         switch (this.prize.key) {
           case 'firstLottery':
             await this.$store.dispatch('lottery', 1)
@@ -228,14 +228,14 @@
   text-align: center;
   min-width: 800px;
 	height: 200px;
-  margin: 50px 0px;
+  margin: 50px 0px 80px 0px;
 }
 .result-box-frist .result-item{
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 38px;
+  font-size: 42px;
 	line-height: 1.2;
   letter-spacing: 3px;
 	font-weight: 400;
@@ -244,16 +244,21 @@
 	padding: 15px 25px;
 	border-radius: 5px;
   width: 100%;
+  min-width: 150px;
 }
 .result-box-second{
   flex-direction: row;
 	flex-wrap: wrap;
   justify-content: space-between;
-  width: 700px;
+  width: 800px;
 	height: 200px;
-  margin: 50px 0px;
+  margin: 50px 0px 80px 0px;
 }
 .result-box-second .result-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 	font-size: 26px;
 	line-height: 1.1;
 	font-weight: 400;
@@ -262,16 +267,21 @@
 	padding: 5px 10px;
 	margin: 0px 0px 20px 0px;
 	border-radius: 5px;
+  min-width: 150px;
 }
 .result-box-third {
   flex-direction: row;
 	flex-wrap: wrap;
   justify-content: space-between;
   width: 800px;
-	height: 200px;
-  margin: 50px 0px;
+	height: 400px;
+  margin: 50px 0px 50px 0px;
 }
 .result-box-third .result-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 	font-size: 26px;
 	line-height: 1.1;
 	font-weight: 400;
@@ -280,6 +290,7 @@
 	padding: 5px 10px;
 	margin: 0px 0px 20px 0px;
 	border-radius: 5px;
+  min-width: 150px;
 }
 .demo-carousel{
   display: block;
@@ -304,7 +315,7 @@
 	color: #ffffff;
 	background: linear-gradient(180deg, #ff6600, #ff3300);
 	border: 0 none;
-	margin: 80px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
 }
 .primary-btn:hover {
 	background: linear-gradient(180deg, #ff3300, #ff1100);
