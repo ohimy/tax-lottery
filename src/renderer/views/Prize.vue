@@ -17,38 +17,33 @@
         <!-- 抽奖结果 -->
         <div class="result-box result-box-frist" v-if="stat == 1 && prize.key == 'firstLottery'">
           <div class="result-item">
-            <p>{{ rollShow[0].code || ''}}</p>
-            <p> {{ rollShow[0].no || ''}}</p>
+            <!-- <p>{{ rollShow[0].code || ''}}</p> -->
+            <p> {{ rollShow[0]}}</p>
           </div>
         </div>
         <div class="result-box result-box-frist" v-if="prize.key == 'firstLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item.code }}</p>
-            <p>{{ item.no }}</p>
+            <p>{{ item }}</p>
           </div>
         </div>
         <div class="result-box result-box-second" v-if="stat == 1 && prize.key == 'secondLottery'">
           <div class="result-item" v-for="(item, index) in rollArr" :key="index">
-             <p>{{ rollShow[index].code || ''}}</p>
-             <p>{{ rollShow[index].no || ''}}</p>
+             <p>{{ rollShow[index]}}</p>
           </div>
         </div>
         <div class="result-box result-box-second" v-if="stat == 2 && prize.key == 'secondLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item.code }}</p>
-            <p>{{ item.no }}</p>
+            <p>{{ item }}</p>
           </div>
         </div>
         <div class="result-box result-box-third" v-if="stat == 1 && prize.key == 'thirdLottery'">
           <div class="result-item" v-for="(item, index) in rollArr" :key="index">
-             <p>{{ rollShow[index].code || '' }}</p>
-             <p>{{ rollShow[index].no || ''}}</p>
+             <p>{{ rollShow[index] }}</p>
           </div>
         </div>
         <div class="result-box result-box-third" v-if="stat == 2 && prize.key == 'thirdLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item.code }}</p>
-            <p>{{ item.no }}</p>
+            <p>{{ item }}</p>
           </div>
         </div>
       </div>
@@ -134,19 +129,20 @@
         }, 60)
         await this.lottery()
       },
-      // 摇奖
-      lottery() {
+      // 停止摇奖
+      async lottery() {
+        window.clearInterval()
         switch (this.prize.key) {
           case 'firstLottery':
-            this.$store.dispatch('lottery', 1)
+            await this.$store.dispatch('lottery', 1)
             this.result = this.firstLottery
             break
           case 'secondLottery':
-            this.$store.dispatch('lottery', 2)
+            await this.$store.dispatch('lottery', 2)
             this.result = this.secondLottery
             break
           case 'thirdLottery':
-            this.$store.dispatch('lottery', 3)
+            await this.$store.dispatch('lottery', 3)
             this.result = this.thirdLottery
             break
           default:
@@ -200,7 +196,7 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	margin: 5vh 0px 0px 0px;
+	margin: 50px 0px 0px 0px;
 }
 .main {
 	display: flex;
@@ -221,8 +217,8 @@
 	font-weight: 400;
 	color: #888888;
   font-style: italic;
-  width: 80vw;
-	height: 30vh;
+  width: 800px;
+	height: 300px;
   margin: 8px 0px 0px 0px;
 }
 .result-box-frist{
@@ -231,8 +227,8 @@
   justify-content: center;
   text-align: center;
   min-width: 800px;
-	height: 20vh;
-  margin: 5vh 0px;
+	height: 200px;
+  margin: 50px 0px;
 }
 .result-box-frist .result-item{
   display: flex;
@@ -253,9 +249,9 @@
   flex-direction: row;
 	flex-wrap: wrap;
   justify-content: space-between;
-  width: 70vw;
-	height: 20vh;
-  margin: 5vh 0px;
+  width: 700px;
+	height: 200px;
+  margin: 50px 0px;
 }
 .result-box-second .result-item {
 	font-size: 26px;
@@ -271,9 +267,9 @@
   flex-direction: row;
 	flex-wrap: wrap;
   justify-content: space-between;
-  width: 80vw;
-	height: 20vh;
-  margin: 5vh 0px;
+  width: 800px;
+	height: 200px;
+  margin: 50px 0px;
 }
 .result-box-third .result-item {
 	font-size: 26px;
@@ -308,7 +304,7 @@
 	color: #ffffff;
 	background: linear-gradient(180deg, #ff6600, #ff3300);
 	border: 0 none;
-	margin: 8vh 0px 0px 0px;
+	margin: 80px 0px 0px 0px;
 }
 .primary-btn:hover {
 	background: linear-gradient(180deg, #ff3300, #ff1100);

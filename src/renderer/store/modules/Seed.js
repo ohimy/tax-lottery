@@ -8,7 +8,8 @@ const state = {
   lotteryTotal: 0,
   firstLottery: [],
   secondLottery: [],
-  thirdLottery: []
+  thirdLottery: [],
+  noList: []
 }
 
 const mutations = {
@@ -32,6 +33,9 @@ const mutations = {
   },
   set_third_lottery: (state, lottery) => {
     state.thirdLottery = lottery
+  },
+  add_no_list: (state, no) => {
+    state.noList.push(no)
   }
 }
 
@@ -67,10 +71,7 @@ const actions = {
         await db.get('taxes').value().forEach(tax => {
           const lotteryCount = tax.amount > 2000 ? 10 : parseInt(tax.amount / 200)
           for (let index = 0; index < lotteryCount; index++) {
-            lotteryList.push({
-              no: tax.no,
-              code: tax.code
-            })
+            lotteryList.push(tax.no)
           }
         })
         db.set('lotteries', lotteryList).write()
@@ -129,37 +130,55 @@ const actions = {
     })
   },
   // 抽奖 lottery 1，2，3 对应一二三等奖
-  async lottery ({ commit }, lottery) {
+  async lottery ({ commit, state }, lottery) {
     return new Promise(async (resolve, reject) => {
       try {
         const lot = db.get('lotteries').value()
+        let noList = state.noList
         switch (lottery) {
           case 1: {
-            const list = await sample(lot)
-            const data = [list]
+            let list = new Set()
+            while (list.size < 1) {
+              let item = sample(lot)
+              if (noList.indexOf(item) === -1) {
+                list.add(item)
+                commit('add_no_list', item)
+              }
+            }
+            const data = Array.from(list)
             commit('set_first_lottery', data)
             db.set('first_lottery', data).write()
             resolve(data)
             break
           }
           case 2: {
-            let list = []
-            for (let index = 0; index < 10; index++) {
-              list.push(sample(lot))
+            let list = new Set()
+            while (list.size < 10) {
+              let item = sample(lot)
+              if (noList.indexOf(item) === -1) {
+                list.add(item)
+                commit('add_no_list', item)
+              }
             }
-            commit('set_second_lottery', list)
-            db.set('second_lottery', list).write()
-            resolve(list)
+            commit('set_second_lottery', Array.from(list))
+            db.set('second_lottery', Array.from(list)).write()
+            resolve(Array.from(list))
             break
           }
           case 3: {
-            let list = []
-            for (let index = 0; index < 100; index++) {
-              list.push(sample(lot))
+            let list = new Set()
+            while (list.size < 100) {
+              let item = sample(lot)
+              if (noList.indexOf(item) === -1) {
+                list.add(item)
+                commit('add_no_list', item)
+              }
             }
-            commit('set_third_lottery', list)
-            db.set('third_lottery', list).write()
-            resolve(list)
+            // 保存到vuex
+            commit('set_third_lottery', Array.from(list))
+            // 保存到数据库
+            db.set('third_lottery', Array.from(list)).write()
+            resolve(Array.from(list))
             break
           }
           default:
