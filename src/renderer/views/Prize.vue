@@ -15,37 +15,37 @@
           <p>总奖票数 {{ lotteryTotal }}</p>
         </div>
         <!-- 抽奖结果 -->
-        <div class="result-box result-box-frist" v-if="stat == 1 && result.length == 0 && prize.key == 'firstLottery'">
+        <div class="result-box result-box-frist" v-if="stat == 1 && prize.key == 'firstLottery'">
           <div class="result-item">
             <p>{{ rollShow[0].code || ''}}</p>
             <p> {{ rollShow[0].no || ''}}</p>
           </div>
         </div>
-        <div class="result-box result-box-frist" v-if="result.length > 0 & prize.key == 'firstLottery'">
+        <div class="result-box result-box-frist" v-if="prize.key == 'firstLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
             <p>{{ item.code }}</p>
             <p>{{ item.no }}</p>
           </div>
         </div>
-        <div class="result-box result-box-second" v-if="stat == 1 && result.length == 0 && prize.key == 'secondLottery'">
+        <div class="result-box result-box-second" v-if="stat == 1 && prize.key == 'secondLottery'">
           <div class="result-item" v-for="(item, index) in rollArr" :key="index">
              <p>{{ rollShow[index].code || ''}}</p>
              <p>{{ rollShow[index].no || ''}}</p>
           </div>
         </div>
-        <div class="result-box result-box-second" v-if="result.length > 0 & prize.key == 'secondLottery'">
+        <div class="result-box result-box-second" v-if="stat == 2 && prize.key == 'secondLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
             <p>{{ item.code }}</p>
             <p>{{ item.no }}</p>
           </div>
         </div>
-        <div class="result-box result-box-third" v-if="stat == 1 && result.length == 0 && prize.key == 'thirdLottery'">
+        <div class="result-box result-box-third" v-if="stat == 1 && prize.key == 'thirdLottery'">
           <div class="result-item" v-for="(item, index) in rollArr" :key="index">
              <p>{{ rollShow[index].code || '' }}</p>
              <p>{{ rollShow[index].no || ''}}</p>
           </div>
         </div>
-        <div class="result-box result-box-third" v-if="result.length > 0 & prize.key == 'thirdLottery'">
+        <div class="result-box result-box-third" v-if="stat == 2 && prize.key == 'thirdLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
             <p>{{ item.code }}</p>
             <p>{{ item.no }}</p>
@@ -53,7 +53,7 @@
         </div>
       </div>
       <button v-if="result.length == 0 && stat == 0" class="primary-btn" @click="startLottery">开始抽奖</button>
-      <button v-if="stat == 1" class="primary-btn" @click="lottery" :disabled="result.length > 0">{{ result.length > 0 ? '已开奖' : '抽奖'}}</button>
+      <button v-if="stat > 0" class="primary-btn" @click="stopLottery" :disabled="stat > 1">{{ stat > 1 ? '已开奖' : '抽奖' }}</button>
     </div>
   </div>
 </template>
@@ -91,7 +91,7 @@
           this.$Message.error('没有这个奖项')
           break
       }
-      this.result.length > 0 ? this.stat = 1 : this.stat = 0
+      this.result.length > 0 ? this.stat = 2 : this.stat = 0
     },
     computed: {
       taxTotal() {
@@ -125,17 +125,17 @@
         }
       },
       // 开始摇奖
-      startLottery() {
+      async startLottery() {
         this.stat = 1
         window.setInterval(() => {
           let _start = this.randomNum(0, this.lotteryList.length - 10)
           let _end = _start + 10
           this.rollShow = this.lotteryList.slice(_start, _end)
         }, 60)
+        await this.lottery()
       },
-      // 停止摇奖
+      // 摇奖
       lottery() {
-        window.clearInterval()
         switch (this.prize.key) {
           case 'firstLottery':
             this.$store.dispatch('lottery', 1)
@@ -153,6 +153,11 @@
             this.$Message.error('没有这个奖项')
             break
         }
+      },
+      // 停止摇奖
+      stopLottery() {
+        window.clearInterval()
+        this.stat = 2
       }
     }
   }

@@ -16,7 +16,7 @@
           <span :class="this.$route.name == 'LotteryIndex' ? 'menu-current' : 'menu'">奖池查询</span>
         </router-link> -->
       </div>
-      <div class="export">
+      <div class="export" v-if="this.$route.name == 'Home'">
         <Button v-if="firstLotteryIsOver && secondLotteryIsOver && thirdLotteryIsOver" type="success" @click="exportData">导出结果</Button>
       </div>
     </div>
