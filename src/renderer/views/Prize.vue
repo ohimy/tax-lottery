@@ -17,43 +17,49 @@
         <!-- 抽奖结果 -->
         <div class="result-box result-box-frist" v-if="stat == 1 && prize.key == 'firstLottery'">
           <div class="result-item">
-            <!-- <p>{{ rollShow[0].code || ''}}</p> -->
-            <p> {{ rollShow[0]}}</p>
+            <p>{{ rollShow[0].code || '' }}</p>
+            <p>{{ rollShow[0].no || '' }}</p>
           </div>
         </div>
         <div class="result-box result-box-frist" v-if="stat == 2 && prize.key == 'firstLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item }}</p>
+            <p>{{ item.code }}</p>
+            <p>{{ item.no }}</p>
           </div>
         </div>
         <div class="result-box result-box-second" v-if="stat == 1 && prize.key == 'secondLottery'">
           <div class="result-item" v-for="(item, index) in rollArrs" :key="index">
-             <p>{{ rollShow[index]}}</p>
+            <p>{{ rollShow[index].code || '' }}</p>
+            <p>{{ rollShow[index].no || '' }}</p>
           </div>
         </div>
         <div class="result-box result-box-second" v-if="stat == 2 && prize.key == 'secondLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item }}</p>
+            <p>{{ item.code }}</p>
+            <p>{{ item.no }}</p>
           </div>
         </div>
         <div class="result-box result-box-third" v-if="stat == 1 && prize.key == 'thirdLottery'">
           <div class="result-item" v-for="(item, index) in rollArr" :key="index">
-             <p>{{ rollShow[index] }}</p>
+            <p>{{ rollShow[index].code || '' }}</p>
+            <p>{{ rollShow[index].no || '' }}</p>
           </div>
         </div>
         <div class="result-box result-box-third" v-if="stat == 2 && prize.key == 'thirdLottery'">
           <div class="result-item" v-for="(item, index) in result" :key="index">
-            <p>{{ item }}</p>
+            <p>{{ item.code }}</p>
+            <p>{{ item.no }}</p>
           </div>
         </div>
       </div>
       <div v-if="prize.key == 'thirdLottery'">
-        <button v-if="thirdLottery.length < 100 && stat !== 1" class="primary-btn" @click="startLottery">开始抽奖</button>
+        <button v-if="thirdLottery.length < 100 && stat !== 1" class="primary-btn" @click="startLottery" :disabled="loading" :loading="loading">{{ loading ? '奖池准备中...' : '开始抽奖' }}</button>
         <button v-if="thirdLottery.length <= 100 && stat === 1" class="primary-btn" @click="stopLottery">抽奖</button>
         <button v-if="thirdLottery.length === 100 && stat === 2" class="primary-btn" :disabled="true">已开奖</button>
+        <div v-if="stat === 2" class="tip">已抽取{{thirdLottery.length}}个</div>
       </div>
       <div v-else>
-        <button v-if="result.length == 0 && stat < 2" class="primary-btn" @click="startLottery">开始抽奖</button>
+        <button v-if="result.length == 0 && stat < 2" class="primary-btn" @click="startLottery" :disabled="loading" :loading="loading">{{ loading ? '奖池准备中...' : '开始抽奖' }}</button>
         <button v-if="stat > 0" class="primary-btn" @click="stopLottery" :disabled="stat > 1">{{ stat > 1 ? '已开奖' : '抽奖' }}</button>
       </div>
     </div>
@@ -70,7 +76,8 @@
         rollArrs: new Array(10),
         rollArr: new Array(20),
         rollShow: [],
-        result: []
+        result: [],
+        loading: false
       }
     },
     created() {
@@ -129,13 +136,17 @@
       },
       // 开始摇奖
       startLottery() {
-        this.stat = 1
-        window.setInterval(() => {
-          let _start = this.randomNum(0, this.lotteryList.length - this.rollArr.length)
-          let _end = _start + this.rollArr.length
-          this.rollShow = this.lotteryList.slice(_start, _end)
-        }, 60)
-        this.lottery()
+        this.loading = true
+        setTimeout(() => {
+          this.lottery()
+        }, 100)
+        setTimeout(() => {
+          window.setInterval(() => {
+            let _start = this.randomNum(0, this.lotteryList.length - this.rollArr.length)
+            let _end = _start + this.rollArr.length
+            this.rollShow = this.lotteryList.slice(_start, _end)
+          }, 60)
+        }, 100)
       },
       // 摇奖
       async lottery() {
@@ -155,6 +166,8 @@
             this.$Message.error('没有这个奖项')
             break
         }
+        this.stat = 1
+        this.loading = false
       },
       // 停止摇奖
       stopLottery() {
@@ -266,7 +279,7 @@
 }
 .result-box-second .result-item {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 	font-size: 26px;
@@ -289,7 +302,7 @@
 }
 .result-box-third .result-item {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 	font-size: 26px;
@@ -339,5 +352,34 @@
 	background: #f7f7f7;
 	border: 1px solid #dcdee2;
 	color: #c5c8ce;
+}
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, .2);
+  width: 100vw;
+  height: 100vh;
+  z-index: 9;
+}
+.loading-con {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px 20px;
+}
+.loading-con .text {
+  margin: 0px 0px 0px 5px;
+  font-size: 16px;
+	line-height: 1.8;
+	font-weight: 400;
+	color: #17233d;
 }
 </style>
