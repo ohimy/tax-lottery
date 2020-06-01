@@ -25,9 +25,9 @@
 <style lang="scss" scoped>
 /deep/.ivu-layout{
   background-color: #fff !important;
-  // background-image: url(./assets/bg.jpg);
+  background-image: url(./assets/mbg.jpeg);
   background-size: 100% 100%;
-  height: auto;
+  height: 100vh;
 }
 .layout {
   max-height: 100%;

@@ -177,7 +177,11 @@
 	flex-direction: row;
 	align-items: center;
   justify-content: space-between;
-  margin: 30px 0px 0px 0px;
+  margin: 60px 0px 0px 0px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 5px;
+  border: 2px solid #f5f5f5;
 }
 .prize-title {
 	font-size: 22px;

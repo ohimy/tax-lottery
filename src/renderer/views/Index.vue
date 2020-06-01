@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="hd"><h1>GO 购 够快乐大出发、激情大采购活动抽奖</h1></div>
+    <!-- <div class="hd"><h1>GO 购 够快乐大出发、激情大采购活动抽奖</h1></div> -->
     <div class="main">
       <div class="list" v-if="lotteryTotal > 0">
         <router-link :to="{name:'PrizeIndex', query: item}" v-for="item in prize" :key="item.title" class="prize">
@@ -164,6 +164,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
+  margin: 100px 0px 0px 0px;
 }
 .prize {
 	display: flex;
@@ -172,7 +173,8 @@
   justify-content: space-between;
   margin: 50px 0px 0px 0px;
   padding: 20px;
-  border: 2px solid #FFFFFF;
+  background: #ffffff;
+  border: 2px solid #ff6600;
   border-radius: 5px;
 }
 .prize:hover {
