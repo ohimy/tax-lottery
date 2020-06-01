@@ -140,13 +140,17 @@
         this.$Message.success('数据清除成功')
       },
       async filterList() {
+        this.loading = {stat: true, text: '奖票计算中...'}
         await this.$store.dispatch('filterSeedData')
         this.$Message.success('奖票数据计算完成')
+        this.loading = {stat: false, text: '奖票计算中...'}
         // this.$router.push('/lotteries')
       },
       async shuffleList() {
+        this.loading = {stat: true, text: '奖票打乱中...'}
         await this.$store.dispatch('shuffle')
         this.$Message.success('奖池数据已打乱')
+        this.loading = {stat: false, text: '奖票打乱中...'}
       }
     }
   }

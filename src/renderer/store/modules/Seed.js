@@ -74,7 +74,11 @@ const actions = {
         await db.get('taxes').value().forEach(tax => {
           const lotteryCount = tax.amount > 2000 ? 10 : parseInt(tax.amount / 200)
           for (let index = 0; index < lotteryCount; index++) {
-            lotteryList.push(tax.no)
+            lotteryList.push({
+              code: tax.code,
+              no: tax.no,
+              serialNo: `${tax.code}-${tax.no}`
+            })
           }
         })
         db.set('lotteries', lotteryList).write()
@@ -143,9 +147,9 @@ const actions = {
             let list = new Set()
             while (list.size < 1) {
               let item = sample(lot)
-              if (noList.indexOf(item) === -1) {
+              if (noList.indexOf(item.serialNo) === -1) {
                 list.add(item)
-                commit('add_no_list', item)
+                commit('add_no_list', item.serialNo)
               }
             }
             const data = Array.from(list)
@@ -158,9 +162,9 @@ const actions = {
             let list = new Set()
             while (list.size < 10) {
               let item = sample(lot)
-              if (noList.indexOf(item) === -1) {
+              if (noList.indexOf(item.serialNo) === -1) {
                 list.add(item)
-                commit('add_no_list', item)
+                commit('add_no_list', item.serialNo)
               }
             }
             commit('set_second_lottery', Array.from(list))
@@ -172,9 +176,9 @@ const actions = {
             let list = new Set()
             while (list.size < 20) {
               let item = sample(lot)
-              if (noList.indexOf(item) === -1) {
+              if (noList.indexOf(item.serialNo) === -1) {
                 list.add(item)
-                commit('add_no_list', item)
+                commit('add_no_list', item.serialNo)
               }
             }
             // 保存到vuex
