@@ -178,7 +178,7 @@
 	flex-direction: row;
 	align-items: center;
   justify-content: space-between;
-  margin: 50px 0px 0px 0px;
+  margin: 30px 0px 0px 0px;
   padding: 20px;
   background: #ffffff;
   border: 2px solid #ff6600;
@@ -208,7 +208,7 @@
 	height: 100px;
 }
 .sd{
-  margin: 80px 0px 0px 150px;
+  margin: 30px 0px 0px 150px;
 }
 .sd-title{
 	font-size: 16px;

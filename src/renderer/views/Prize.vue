@@ -53,14 +53,14 @@
         </div>
       </div>
       <div v-if="prize.key == 'thirdLottery'">
-        <button v-if="thirdLottery.length < 100 && stat !== 1" class="primary-btn" @click="startLottery" :disabled="loading" :loading="loading">{{ loading ? '奖池准备中...' : '开始抽奖' }}</button>
-        <button v-if="thirdLottery.length <= 100 && stat === 1" class="primary-btn" @click="stopLottery">抽奖</button>
-        <button v-if="thirdLottery.length === 100 && stat === 2" class="primary-btn" :disabled="true">已开奖</button>
         <div v-if="stat === 2" class="tip">已抽取{{thirdLottery.length}}个</div>
+        <button v-if="thirdLottery.length < 100 && stat !== 1" class="primary-btn" @click="startLottery" :disabled="loading" :loading="loading">{{ loading ? '奖池准备中...' : '开始抽奖' }}</button>
+        <button v-if="thirdLottery.length <= 100 && stat === 1" class="primary-btn" @click="stopLottery">停止抽奖</button>
+        <button v-if="thirdLottery.length === 100 && stat === 2" class="primary-btn" :disabled="true">已开奖</button>
       </div>
       <div v-else>
         <button v-if="result.length == 0 && stat < 2" class="primary-btn" @click="startLottery" :disabled="loading" :loading="loading">{{ loading ? '奖池准备中...' : '开始抽奖' }}</button>
-        <button v-if="stat > 0" class="primary-btn" @click="stopLottery" :disabled="stat > 1">{{ stat > 1 ? '已开奖' : '抽奖' }}</button>
+        <button v-if="stat > 0" class="primary-btn" @click="stopLottery" :disabled="stat > 1">{{ stat > 1 ? '已开奖' : '停止抽奖' }}</button>
       </div>
     </div>
   </div>
@@ -191,10 +191,10 @@
 	align-items: center;
   justify-content: space-between;
   margin: 60px 0px 0px 0px;
-  padding: 20px;
+  padding: 5px 15px;
   background: #ffffff;
   border-radius: 5px;
-  border: 2px solid #f5f5f5;
+  border: 2px solid #ff0000;
 }
 .prize-title {
 	font-size: 22px;
@@ -250,7 +250,7 @@
   justify-content: center;
   text-align: center;
   min-width: 800px;
-	height: 200px;
+	height: auto;
   margin: 50px 0px 80px 0px;
 }
 .result-box-frist .result-item{
@@ -273,9 +273,9 @@
   flex-direction: row;
 	flex-wrap: wrap;
   justify-content: space-between;
-  width: 800px;
-	height: 200px;
-  margin: 50px 0px 80px 0px;
+  width: 1000px;
+	height: auto;
+  margin: 0px 0px 50px 0px;
 }
 .result-box-second .result-item {
   display: flex;
@@ -296,9 +296,9 @@
   flex-direction: row;
 	flex-wrap: wrap;
   justify-content: space-between;
-  width: 800px;
-	height: 400px;
-  margin: 50px 0px 50px 0px;
+  width: 1000px;
+	height: auto;
+  margin: 0px 0px 0px 0px;
 }
 .result-box-third .result-item {
   display: flex;
@@ -352,6 +352,13 @@
 	background: #f7f7f7;
 	border: 1px solid #dcdee2;
 	color: #c5c8ce;
+}
+.tip {
+  font-size: 24px;
+	line-height: 1.1;
+	font-weight: 400;
+	color: #ff3300;
+  margin: 10px 0px 20px 0px;
 }
 .loading {
   position: absolute;
