@@ -193,7 +193,7 @@
 	flex-direction: row;
 	align-items: center;
   justify-content: space-between;
-  margin: 60px 0px 0px 0px;
+  margin: 30px 0px 0px 0px;
   padding: 5px 15px;
   background: #ffffff;
   border-radius: 5px;

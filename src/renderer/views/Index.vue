@@ -171,7 +171,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  margin: 100px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
 }
 .prize {
 	display: flex;
