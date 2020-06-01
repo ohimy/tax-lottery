@@ -37,6 +37,9 @@ const mutations = {
   add_third_lottery: (state, lottery) => {
     state.thirdLottery = state.thirdLottery.concat(lottery)
   },
+  set_no_list: (state, noList) => {
+    state.noList = noList
+  },
   add_no_list: (state, no) => {
     state.noList.push(no)
   }
@@ -117,6 +120,7 @@ const actions = {
         commit('set_first_lottery', [])
         commit('set_second_lottery', [])
         commit('set_third_lottery', [])
+        commit('set_no_list', [])
         resolve(true)
       } catch (error) {
         reject(error)

@@ -12,7 +12,7 @@
         <!-- 未开始抽奖 -->
         <div v-if="result.length == 0 && stat < 1" class="result-box result-box-info">
           <p>总发票数 {{ taxTotal }}</p>
-          <p>总奖票数 {{ lotteryTotal }}</p>
+          <p>总奖票数 {{ lotteryTotal - noListTotal }}</p>
         </div>
         <!-- 抽奖结果 -->
         <div class="result-box result-box-frist" v-if="stat == 1 && prize.key == 'firstLottery'">
@@ -109,6 +109,9 @@
       },
       lotteryTotal() {
         return this.$store.state.seed.lotteryTotal
+      },
+      noListTotal() {
+        return this.$store.state.seed.noList.length
       },
       lotteryList() {
         return this.$store.state.seed.lotteryList
