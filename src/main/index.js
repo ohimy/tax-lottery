@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, Menu, BrowserWindow } from 'electron'
+import { app, globalShortcut, Menu, BrowserWindow } from 'electron'
 import '../renderer/store'
 // import path from 'path'
 // import os from 'os'
@@ -25,15 +25,17 @@ function createWindow () {
   Menu.setApplicationMenu(null)
 
   mainWindow = new BrowserWindow({
-    height: 563,
-    useContentSize: true,
-    width: 1000
+    fullscreen: true
   })
 
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  globalShortcut.register('ESC', () => {
+    mainWindow.setFullScreen(false)
   })
 
   // if (process.env.NODE_ENV === 'development') {
