@@ -11,10 +11,10 @@
         </router-link>
         <router-link :to="{name:'SeedIndex'}">
           <span :class="this.$route.name == 'SeedIndex' ? 'menu-current' : 'menu'" @click="exportData">数据导入</span>
-        </router-link>
+        </router-link> -->
         <router-link :to="{name:'LotteryIndex'}"> 
           <span :class="this.$route.name == 'LotteryIndex' ? 'menu-current' : 'menu'">奖池查询</span>
-        </router-link> -->
+        </router-link>
       </div>
       <div class="export" v-if="this.$route.name == 'Home'">
         <Button v-if="firstLotteryIsOver && secondLotteryIsOver && thirdLotteryIsOver" type="success" @click="exportData">导出结果</Button>

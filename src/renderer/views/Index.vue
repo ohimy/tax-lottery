@@ -34,7 +34,7 @@
           <h3 class="sd-title">数据</h3>
           <div class="sd-con">
             <p>总发票数 {{ taxTotal }}</p>
-            <p>总奖票数 {{ lotteryTotal }}</p>
+            <p>总奖票数 {{ lotteryTotal - noListTotal }}</p>
           </div>
           <div class="sd-con">
             <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload="handleUpload">
@@ -94,6 +94,9 @@
       },
       lotteryTotal() {
         return this.$store.state.seed.lotteryTotal
+      },
+      noListTotal() {
+        return this.$store.state.seed.noList.length
       },
       firstLotteryIsOver() {
         return this.$store.state.seed.firstLottery.length === 1
