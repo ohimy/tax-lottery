@@ -49,7 +49,7 @@
             </div>
           </div>
         </div>
-        <div class="loading" v-if="loading.stat">
+        <div class="loading" v-show="loading.stat">
           <div class="loading-con">
             <Spin size="large"></Spin>
             <span class="text">{{ loading.text }}</span>

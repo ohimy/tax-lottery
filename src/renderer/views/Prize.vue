@@ -53,13 +53,13 @@
         </div>
       </div>
       <div v-if="prize.key == 'thirdLottery'">
-        <button v-if="thirdLottery.length < 100 && stat !== 1" class="primary-btn" @click="startLottery" :loading="loading">{{ loading ? '奖池准备中...' : '开始抽奖' }}</button>
+        <button v-if="thirdLottery.length < 100 && stat !== 1" class="primary-btn" @click="startLottery" :disabled="loading" :loading="loading">{{ loading ? '奖池准备中...' : '开始抽奖' }}</button>
         <button v-if="thirdLottery.length <= 100 && stat === 1" class="primary-btn" @click="stopLottery">抽奖</button>
         <button v-if="thirdLottery.length === 100 && stat === 2" class="primary-btn" :disabled="true">已开奖</button>
         <div v-if="stat === 2" class="tip">已抽取{{thirdLottery.length}}个</div>
       </div>
       <div v-else>
-        <button v-if="result.length == 0 && stat < 2" class="primary-btn" @click="startLottery" :loading="loading">{{ loading ? '奖池准备中...' : '开始抽奖' }}</button>
+        <button v-if="result.length == 0 && stat < 2" class="primary-btn" @click="startLottery" :disabled="loading" :loading="loading">{{ loading ? '奖池准备中...' : '开始抽奖' }}</button>
         <button v-if="stat > 0" class="primary-btn" @click="stopLottery" :disabled="stat > 1">{{ stat > 1 ? '已开奖' : '抽奖' }}</button>
       </div>
     </div>
@@ -136,14 +136,17 @@
       },
       // 开始摇奖
       startLottery() {
-        this.stat = 1
         this.loading = true
-        window.setInterval(() => {
-          let _start = this.randomNum(0, this.lotteryList.length - this.rollArr.length)
-          let _end = _start + this.rollArr.length
-          this.rollShow = this.lotteryList.slice(_start, _end)
-        }, 60)
-        this.lottery()
+        setTimeout(() => {
+          this.lottery()
+        }, 100)
+        setTimeout(() => {
+          window.setInterval(() => {
+            let _start = this.randomNum(0, this.lotteryList.length - this.rollArr.length)
+            let _end = _start + this.rollArr.length
+            this.rollShow = this.lotteryList.slice(_start, _end)
+          }, 60)
+        }, 100)
       },
       // 摇奖
       async lottery() {
@@ -163,6 +166,7 @@
             this.$Message.error('没有这个奖项')
             break
         }
+        this.stat = 1
         this.loading = false
       },
       // 停止摇奖
